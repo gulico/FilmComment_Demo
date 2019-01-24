@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="line_gray">#e3e3e3</color>
+    <color name="checked_text">#4a4a4a</color>
+    <color name="nomarl_text">#969696</color>
+    <color name="checked_ico">#4a4a4a</color>
+    <color name="nomarl_ico">#969696</color>
 </resources>
