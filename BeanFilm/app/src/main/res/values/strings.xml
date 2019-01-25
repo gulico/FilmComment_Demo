@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">BeanFilm</string>
+    <string name="app_name">豆*电影</string>
     <string name="search_tips"> 电影 / 电视剧 /影人 </string>
     <string name="home_tag">主页</string>
     <string name="mine_tag">我的</string>
+    <string name="director">导演</string>
+    <string name="leader_actor">主演</string>
 </resources>

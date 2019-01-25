@@ -13,7 +13,7 @@ public class FilmSimple {
     private String mActor2;//主演2
     private String mActor3;//主演3
 
-    public void FilmSimple(){
+    public FilmSimple(){
         mId = mTitle = mDirector = mActor1 = mActor2 = mActor3 = null;
         mScore = 0;
     }

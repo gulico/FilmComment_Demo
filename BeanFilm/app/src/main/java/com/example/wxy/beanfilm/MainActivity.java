@@ -7,11 +7,13 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static int sTagFlag = 2;//首页为1，个人主页为2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*碎片显示管理*/
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
@@ -21,5 +23,7 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.fragment_container, fragment)
                     .commit();
         }
+
+        /**/
     }
 }
