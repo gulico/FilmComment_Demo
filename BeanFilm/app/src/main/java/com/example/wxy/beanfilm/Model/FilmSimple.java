@@ -1,4 +1,4 @@
-package com.example.wxy.beanfilm;
+package com.example.wxy.beanfilm.Model;
 
 /**
  * Created by WXY on 2019/1/24.

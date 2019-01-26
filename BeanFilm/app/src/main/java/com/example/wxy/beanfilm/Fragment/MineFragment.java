@@ -1,4 +1,4 @@
-package com.example.wxy.beanfilm;
+package com.example.wxy.beanfilm.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.wxy.beanfilm.Model.FilmSimple;
+import com.example.wxy.beanfilm.Model.FilmSimpleLab;
+import com.example.wxy.beanfilm.R;
 
 import java.util.List;
 

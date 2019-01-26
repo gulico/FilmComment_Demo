@@ -1,4 +1,4 @@
-package com.example.wxy.beanfilm;
+package com.example.wxy.beanfilm.Model;
 
 import android.content.Context;
 
