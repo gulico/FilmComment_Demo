@@ -1,12 +1,23 @@
-package com.example.wxy.beanfilm.Model;
+package com.example.wxy.beanfilm.Bean;
 
 /**
  * Created by WXY on 2019/1/24.
  */
 
 public class FilmSimple {
+
+    public enum Source{//来源分类
+        NULL,
+        DOUBAN,
+        MAOYAN
+    }
+
     private String mId;
     private String mTitle;//电影名
+    private String mPic;//海报
+    private String mInfo;//简介
+    private String mUrl;//详情页链接
+    private Source mSource;// 来源分类
     private float mScore;//评分
     private String mDirector;//导演
     private String mActor1;//主演1
@@ -14,9 +25,12 @@ public class FilmSimple {
     private String mActor3;//主演3
 
     public FilmSimple(){
-        mId = mTitle = mDirector = mActor1 = mActor2 = mActor3 = null;
+        mId = mTitle = mDirector = mActor1 = mActor2 = mActor3 =  mPic = mInfo = mUrl = null;
+        mSource = Source.NULL;
         mScore = 0;
     }
+
+
 
     public FilmSimple(String id, String title, float score, String director, String actor1) {
         mId = id;
@@ -43,6 +57,39 @@ public class FilmSimple {
         mActor1 = actor1;
         mActor2 = actor2;
         mActor3 = actor3;
+    }
+
+
+    public String getPic() {
+        return mPic;
+    }
+
+    public void setPic(String pic) {
+        mPic = pic;
+    }
+
+    public String getInfo() {
+        return mInfo;
+    }
+
+    public void setInfo(String minfo) {
+        this.mInfo = minfo;
+    }
+
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public void setUrl(String url) {
+        mUrl = url;
+    }
+
+    public Source getSource() {
+        return mSource;
+    }
+
+    public void setSource(Source source) {
+        mSource = source;
     }
 
     public String getId() {

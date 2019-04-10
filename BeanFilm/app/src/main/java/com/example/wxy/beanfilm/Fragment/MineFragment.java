@@ -1,6 +1,5 @@
 package com.example.wxy.beanfilm.Fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,8 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wxy.beanfilm.LoginActivity;
-import com.example.wxy.beanfilm.Model.FilmSimple;
-import com.example.wxy.beanfilm.Model.FilmSimpleLab;
+import com.example.wxy.beanfilm.Bean.FilmSimple;
+import com.example.wxy.beanfilm.Bean.FilmSimpleLab;
 import com.example.wxy.beanfilm.R;
 
 import java.util.List;
@@ -95,7 +93,7 @@ public class MineFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        mAppCompatActivity.getMenuInflater().inflate(R.menu.mine_toolbar,menu);
+        inflater.inflate(R.menu.mine_toolbar,menu);
     }
 
     @Override

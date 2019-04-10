@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    tools:context="com.example.wxy.beanfilm.MainActivity">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toobar_frame_home"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"></android.support.v7.widget.Toolbar>
 
     <TextView
         android:layout_width="wrap_content"
@@ -11,4 +21,4 @@
         android:text="@string/home_tag"/>
 
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

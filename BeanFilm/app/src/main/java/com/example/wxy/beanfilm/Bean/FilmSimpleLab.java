@@ -1,4 +1,4 @@
-package com.example.wxy.beanfilm.Model;
+package com.example.wxy.beanfilm.Bean;
 
 import android.content.Context;
 
@@ -21,18 +21,10 @@ public class FilmSimpleLab {//存储 一组 简单电影资料
     }
     private FilmSimpleLab(Context context){//私有构造函数
         mFilmSimples = new ArrayList<>();
-        //获取数据
-        for(int i=0;i<100;i++){
-            FilmSimple filmSimple = new FilmSimple();
-            filmSimple.setId(Integer.toString(i));
-            filmSimple.setTitle("电影名"+i);
-            filmSimple.setDirector("某某某"+i);
-            filmSimple.setActor1("张三三"+i);
-            filmSimple.setActor2("李四四"+i);
-            filmSimple.setActor3("王五五"+i);
-            mFilmSimples.add(filmSimple);
-        }
+    }
 
+    public void addFilmSimleLab(FilmSimple f){
+        mFilmSimples.add(f);
     }
 
     public List<FilmSimple> getFilmSimples(){//获取整组电影资料
@@ -45,6 +37,10 @@ public class FilmSimpleLab {//存储 一组 简单电影资料
                 return filmSimple;
         }
         return null;
+    }
+
+    public void clear(){
+        mFilmSimples.clear();
     }
 
 }

@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*替换碎片*/
+    /*替换碎片 */
     private void replaceFragment(String tag) {
         if (currentFragment != null) {
             getSupportFragmentManager().beginTransaction().hide(currentFragment).commit();

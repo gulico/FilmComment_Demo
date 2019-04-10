@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.wxy.beanfilm">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,18 +14,38 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/activity_title">
-            <intent-filter>
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".FilmDetailsActivity">
+        <activity android:name=".FilmDetailsActivity"
+            android:theme="@style/FilmDetailActivityTheme">
         </activity>
-        <activity android:name=".LoginActivity"
-                  android:label="@string/activity_title">
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/activity_title">
         </activity>
         <activity android:name=".SettingActivity">
+        </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/register">
+        </activity>
+
+        <service
+            android:name=".Model.LoginService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+        <service
+            android:name=".Model.SearchService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
+        <activity android:name=".SearchActivity">
         </activity>
     </application>
 
