@@ -1,8 +1,10 @@
 package com.example.wxy.beanfilm.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
+import com.example.wxy.beanfilm.FilmDetailsActivity;
 import com.example.wxy.beanfilm.R;
 
 import java.io.Serializable;
@@ -34,6 +37,7 @@ public class SearchResultFragment extends Fragment {
     private RecyclerView mFilmSimplesRecyclerView;
     private SearchFilmAdapter mAdapter;
     List<FilmSimple> mFilmSimples;
+    private AppCompatActivity mAppCompatActivity;
 
     public SearchResultFragment(FilmSimple.Source type, List<FilmSimple> filmSimples) {
         this.TYPE = type;
@@ -59,6 +63,7 @@ public class SearchResultFragment extends Fragment {
             this.TYPE = (FilmSimple.Source)getArguments().getSerializable(ARG_PARAM1);
             mFilmSimples = (List<FilmSimple>)getArguments().getSerializable(ARG_PARAM2);
         }
+        mAppCompatActivity = (AppCompatActivity) getActivity();
     }
 
     @Nullable
@@ -122,6 +127,8 @@ public class SearchResultFragment extends Fragment {
             Toast.makeText(getActivity(),
                     mFilmSimple.getTitle() + " clicked!", Toast.LENGTH_SHORT)
                     .show();
+            FilmSimple filmSimple = mFilmSimples.get((int)getItemId());
+            startActivity(FilmDetailsActivity.newIntent(mAppCompatActivity,filmSimple.getUrl()));
         }
     }
 
@@ -134,7 +141,7 @@ public class SearchResultFragment extends Fragment {
 
         @Override
         public SearchFilmHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());/////////////
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             return new SearchFilmHolder(layoutInflater, parent);
         }
 

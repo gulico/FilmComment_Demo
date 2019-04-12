@@ -157,7 +157,6 @@ public class SearchService extends IntentService {
                             mScore = Float.parseFloat(mScoreSTR);//评分
 
                         String mInfo = e.select("div.movie-item-pub").text();//介绍
-                        System.out.print("猫眼"+mTitle+mUri+mPic+mScore+"\n");
                         FilmSimple f = new FilmSimple();
                         f.setTitle(mTitle);
                         f.setUrl(mUri);
@@ -201,11 +200,11 @@ public class SearchService extends IntentService {
     }
 
     /*回调接口等*/
-    public void setCallback(SearchService.Callback callback) {
+    public void setCallback(Callback callback) {
         this.mCallback = callback;
     }
 
     public static interface Callback {
-        void onDataChange(SearchService.SearchState newSearchState,List<FilmSimple> filmSimples);
+        void onDataChange(SearchState newSearchState,List<FilmSimple> filmSimples);
     }
 }

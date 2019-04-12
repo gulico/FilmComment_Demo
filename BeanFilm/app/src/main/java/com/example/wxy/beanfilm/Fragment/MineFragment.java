@@ -119,7 +119,6 @@ public class MineFragment extends Fragment {
         private FilmSimple mFilmSimple;
 
         private TextView mTitleTextView;
-        private TextView mScoreTextView;
         private TextView mDirectorTextView;
         private TextView mLeadActorsTextView;
 
@@ -128,7 +127,6 @@ public class MineFragment extends Fragment {
             itemView.setOnClickListener(this);
             //实例化视图对象
             mTitleTextView = (TextView)itemView.findViewById(R.id.MineFilm_recycler_view_Title);
-            mScoreTextView = (TextView)itemView.findViewById(R.id.star_n_score_score);
             mDirectorTextView = (TextView)itemView.findViewById(R.id.MineFilm_recycler_view_directors);
             mLeadActorsTextView = (TextView)itemView.findViewById(R.id.MineFilm_recycler_view_actors);
         }
@@ -137,9 +135,9 @@ public class MineFragment extends Fragment {
             mFilmSimple = filmSimple;
             //绑定数据
             mTitleTextView.setText(mFilmSimple.getTitle());
-            mScoreTextView.setText(Float.toString(mFilmSimple.getScore()));
-            mDirectorTextView.setText("导演："+mFilmSimple.getDirector());
-            mLeadActorsTextView.setText("主演："+mFilmSimple.getActor1()+"/"+mFilmSimple.getActor2()+"/"+mFilmSimple.getActor3());
+            //mScoreTextView.setText(Float.toString(mFilmSimple.getScore()));
+            //mDirectorTextView.setText("导演："+mFilmSimple.getDirector());
+            //mLeadActorsTextView.setText("主演："+mFilmSimple.getActor1()+"/"+mFilmSimple.getActor2()+"/"+mFilmSimple.getActor3());
         }
 
         @Override

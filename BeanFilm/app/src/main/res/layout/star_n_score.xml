@@ -40,8 +40,8 @@
         android:layout_height="13sp"
         android:src="@drawable/star_ico"
         android:tint="@color/nomarl_ico"/>
-
-    <TextView
+    <!--
+        <TextView
         android:id="@+id/star_n_score_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,4 +49,6 @@
         android:text="8.4"
         android:textColor="@color/nomarl_text"
         android:textSize="13sp"/>
+    -->
+
 </LinearLayout>
