@@ -3,6 +3,7 @@ package com.example.wxy.beanfilm.Model;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,6 +19,8 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -67,11 +70,12 @@ public class FilmDetailService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionDouban(Context context, String param1) {
+    public static void startActionDouban(Context context, String param1,ServiceConnection mConnection) {
         Intent intent = new Intent(context, FilmDetailService.class);
         intent.setAction(ACTION_DOUBAN);
         intent.putExtra(EXTRA_URL, param1);
         context.startService(intent);
+        context.bindService(intent,mConnection,BIND_AUTO_CREATE);
     }
 
     /**
@@ -81,11 +85,12 @@ public class FilmDetailService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1) {
+    public static void startActionMaoYan(Context context, String param1, ServiceConnection mConnection) {
         Intent intent = new Intent(context, FilmDetailService.class);
         intent.setAction(ACTION_MAOYAN);
         intent.putExtra(EXTRA_URL, param1);
         context.startService(intent);
+        context.bindService(intent,mConnection,BIND_AUTO_CREATE);
     }
 
     @Override
@@ -110,7 +115,7 @@ public class FilmDetailService extends IntentService {
         // TODO: Handle action Foo
         //throw new UnsupportedOperationException("Not yet implemented");
         final FilmSimple filmSimple = new FilmSimple();
-        final List<Comment> comments = new ArrayList();
+        final List<Comment> comments = new ArrayList<Comment>();
         new Thread(){
             @Override
             public void run() {
@@ -118,9 +123,9 @@ public class FilmDetailService extends IntentService {
                 try{
                     Document doc = Jsoup.connect(URL)
                             .get();
-                    String mTitle = doc.select("div.[id=mainpic]").select("img").attr("alt");//标题
+                    String mTitle = doc.select("div[id=mainpic]").select("img").attr("alt");//标题
                     String mUri = URL;//详情页面链接
-                    String mPic = doc.select("div.[id=mainpic]").select("img").attr("src");//图片链接
+                    String mPic = doc.select("div[id=mainpic]").select("img").attr("src");//图片链接
                     String mBreif = doc.select("div.related-info").select("span").first().text();//简介
                     String mScoreSTR = doc.select("div[class^=rating_self]").select("strong").text();//分数
                     float mScore;
@@ -150,8 +155,14 @@ public class FilmDetailService extends IntentService {
                         Actor a = new Actor();
                         String name = e.select("a.name").text();
                         String role = e.select("span.role").text();
+                        String picSTR = e.select("div.avatar").attr("style");
+                        String[] strarray = picSTR.split("\\(|\\)");
+                        String pic = new String();
+                        if(strarray.length>1)
+                            pic = strarray[1];
                         a.setName(name);
                         a.setRole(role);
+                        a.setPic(pic);
                         actors.add(a);
                     }
                     Elements CommitLinks = doc.select("div.comment");
@@ -165,6 +176,7 @@ public class FilmDetailService extends IntentService {
                         c.setContext(commitcontext);
                         comments.add(c);
                     }
+
                     filmSimple.setTitle(mTitle);
                     filmSimple.setUrl(mUri);
                     filmSimple.setPic(mPic);

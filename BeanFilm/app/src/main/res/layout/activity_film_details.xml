@@ -39,8 +39,8 @@
                 android:orientation="vertical">
                 <ImageView
                     android:id="@+id/film_deteail_poster"
-                    android:layout_width="120dp"
-                    android:layout_height="160dp"
+                    android:layout_width="150dp"
+                    android:layout_height="200dp"
                     android:background="@color/colorPrimary"/>
             </LinearLayout>
 
@@ -52,120 +52,160 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/film_deteail_TitleCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryContext"
-            android:orientation="horizontal"
-            android:padding="25dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/film_deteail_title_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="死亡天使"
-                    android:textColor="@color/tile_text"
-                    android:textSize="28sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/film_deteail_classes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/nomarl_text"
-                    android:text="剧情/传记/犯罪"/>
-
-                <TextView
-                    android:id="@+id/film_deteail_Release_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/nomarl_text"
-                    android:text="上映时间：2018-05-12"/>
-
-                <TextView
-                    android:id="@+id/film_deteail_lasting_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/nomarl_text"
-                    android:text="片长：118分钟"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/film_deteail_score_num"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="8.6"
-                            android:textColor="@color/tile_text"
-                            android:textSize="28sp"
-                            android:textStyle="bold"/>
-
-                        <include
-                            android:id="@+id/film_deteail_star"
-                            layout="@layout/star_n_score"/>
-
-                        <TextView
-                            android:id="@+id/film_deteail_person_num"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="260037人"/>
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
-            </LinearLayout>
-        </LinearLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryContext"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            android:padding="25dp">
-            <TextView
+            android:layout_height="match_parent"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/film_deteail_TitleCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="简介"
-                android:textSize="16sp"
-                android:textColor="@color/nomarl_text"
-                android:layout_marginBottom="10dp"/>
-            <TextView
-                android:id="@+id/film_deteail_breif"
+                android:background="@color/colorPrimaryContext"
+                android:orientation="horizontal"
+                android:padding="25dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/film_deteail_title_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/tile_text"
+                        android:textSize="28sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/film_deteail_classes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/nomarl_text"/>
+
+                    <TextView
+                        android:id="@+id/film_deteail_Release_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/nomarl_text"/>
+
+                    <TextView
+                        android:id="@+id/film_deteail_lasting_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/nomarl_text"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/film_deteail_score_num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/tile_text"
+                                android:textSize="28sp"
+                                android:textStyle="bold"/>
+
+                            <include
+                                android:id="@+id/film_deteail_star"
+                                layout="@layout/star_n_score"/>
+
+                            <TextView
+                                android:id="@+id/film_deteail_person_num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="国内知名女设计师……"
-                android:textSize="16sp"
-                android:textColor="@color/checked_text"/>
+                android:background="@color/colorPrimaryContext"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:padding="25dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="简介"
+                    android:textSize="16sp"
+                    android:textColor="@color/nomarl_text"
+                    android:layout_marginBottom="10dp"/>
+                <TextView
+                    android:id="@+id/film_deteail_breif"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/checked_text"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryContext"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:padding="25dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="影人"
+                    android:textSize="16sp"
+                    android:textColor="@color/nomarl_text"
+                    android:layout_marginBottom="10dp"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/film_deteail_actors_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryContext"></android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryContext"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:padding="25dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="评论"
+                    android:textSize="16sp"
+                    android:textColor="@color/nomarl_text"
+                    android:layout_marginBottom="10dp"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/film_deteail_comments_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryContext"></android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
 
 </android.support.design.widget.CoordinatorLayout>

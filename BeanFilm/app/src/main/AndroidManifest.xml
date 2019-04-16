@@ -22,6 +22,7 @@
         </activity>
         <activity
             android:name=".FilmDetailsActivity"
+            android:label="@string/empty"
             android:theme="@style/FilmDetailActivityTheme">
         </activity>
         <activity

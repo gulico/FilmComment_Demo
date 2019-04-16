@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+    android:gravity="center">
+    <ImageView
+        android:id="@+id/list_item_actor_pic"
+        android:layout_width="90dp"
+        android:layout_height="120dp"/>
+    <TextView
+        android:id="@+id/list_item_actor_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tile_text"
+        android:text="福泽克雄"/>
+    <TextView
+        android:id="@+id/list_item_actor_role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="导演"/>
+
+</LinearLayout>

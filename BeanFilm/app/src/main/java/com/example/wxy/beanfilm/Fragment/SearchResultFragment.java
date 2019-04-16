@@ -125,10 +125,10 @@ public class SearchResultFragment extends Fragment {
         public void onClick(View v) {
             //列表点击事件
             Toast.makeText(getActivity(),
-                    mFilmSimple.getTitle() + " clicked!", Toast.LENGTH_SHORT)
+                    mFilmSimple.getTitle() + " clicked!"+getAdapterPosition(), Toast.LENGTH_SHORT)
                     .show();
-            FilmSimple filmSimple = mFilmSimples.get((int)getItemId());
-            startActivity(FilmDetailsActivity.newIntent(mAppCompatActivity,filmSimple.getUrl()));
+            FilmSimple filmSimple = mFilmSimples.get(getAdapterPosition());
+            startActivity(FilmDetailsActivity.newIntent(mAppCompatActivity,filmSimple.getUrl(),TYPE));
         }
     }
 

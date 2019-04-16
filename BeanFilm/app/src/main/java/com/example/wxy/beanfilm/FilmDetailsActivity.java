@@ -11,26 +11,51 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.wxy.beanfilm.Bean.Actor;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
+import com.example.wxy.beanfilm.Bean.FilmSimpleLab;
+import com.example.wxy.beanfilm.Fragment.MineFragment;
 import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
+import com.example.wxy.beanfilm.Model.ActorsAdapter;
+import com.example.wxy.beanfilm.Model.CommentsAdapter;
 import com.example.wxy.beanfilm.Model.FilmDetailService;
 import com.example.wxy.beanfilm.Model.SearchService;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.wxy.beanfilm.Model.FilmDetailService.State.SUCCESS;
 
 public class FilmDetailsActivity extends AppCompatActivity {
 
+    private String TAG = "FilmDetailsActivity";
     public static final String EXTRA_URL = "com.example.wxy.beanfilm.EXTRA.URL";
+    public static final String EXTRA_SOURCE = "com.example.wxy.beanfilm.EXTRA.SOURCE";
+
+    private RecyclerView mActorsRecyclerView;
+    private ActorsAdapter mActorsAdapter;
+    private RecyclerView mCommentsRecyclerView;
+    private CommentsAdapter mCommentsAdapter;
+    private AppCompatActivity mAppCompatActivity;
 
     private FilmSimple mFilmSimple = new FilmSimple();
     private FilmSimple.Source sTagFlag = FilmSimple.Source.NULL;
-    //private FilmDetailService.State mState ;
+    private List<Comment> mComments = new ArrayList<Comment>();
+    private FilmDetailService.State mState ;
 
     private FilmDetailService mFilmDetailService;
 
@@ -42,8 +67,8 @@ public class FilmDetailsActivity extends AppCompatActivity {
             mFilmDetailService.setCallback(new FilmDetailService.Callback() {
                 @Override
                 public void onDataChange(FilmDetailService.State state,FilmSimple filmSimple,List<Comment> comments) {
-                    //此处依然不能更新UI
                     mFilmSimple = filmSimple;
+                    mComments = comments;
                     Message msg = new Message();
                     msg.obj = state;
                     handler.sendMessage(msg);
@@ -56,15 +81,42 @@ public class FilmDetailsActivity extends AppCompatActivity {
             //服务断开
         }
     };
+
+    ImageView mFilmPosterImageView;//海报
+    TextView mTitleTextView;//标题
+    TextView mClassifyTextView;//电影分类
+    TextView mDateTextView;//上映日期
+    TextView mLastingTextView;//片长
+    TextView mScoreTextView;//评分
+    TextView mPeopleNumTextView;//评分人数
+    TextView mBreifTextView;//简介
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_details);
+        mAppCompatActivity = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.film_deteail_toolbar);//工具栏
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.film_deteail_toolbar);
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.film_deteail_collapsing_toolbar);
 
-        ImageView mFilmPosterImageView = (ImageView)findViewById(R.id.film_deteail_poster) ;
+        mFilmPosterImageView = (ImageView)findViewById(R.id.film_deteail_poster) ;
+        mTitleTextView  = (TextView)findViewById( R.id.film_deteail_title_textview);
+        mClassifyTextView = (TextView)findViewById(R.id.film_deteail_classes);
+        mDateTextView = (TextView)findViewById(R.id.film_deteail_Release_time);
+        mLastingTextView = (TextView)findViewById(R.id.film_deteail_lasting_time);
+        mScoreTextView = (TextView)findViewById(R.id.film_deteail_score_num);
+        mPeopleNumTextView = (TextView)findViewById(R.id.film_deteail_person_num);
+        mBreifTextView = (TextView)findViewById(R.id.film_deteail_breif);
+
+        mActorsRecyclerView = (RecyclerView) findViewById(R.id.film_deteail_actors_recyclerview);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);//横向滚动
+        mActorsRecyclerView.setLayoutManager(layoutManager);
+
+        mCommentsRecyclerView = (RecyclerView) findViewById(R.id.film_deteail_comments_recyclerview);
+        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -72,15 +124,21 @@ public class FilmDetailsActivity extends AppCompatActivity {
         }
         Intent intent = getIntent();
         String Url = intent.getStringExtra(EXTRA_URL);
-
+        sTagFlag = (FilmSimple.Source)intent.getSerializableExtra(EXTRA_SOURCE);
+        if(sTagFlag == FilmSimple.Source.DOUBAN)
+            FilmDetailService.startActionDouban(this,Url,mConnection);
+        else if(sTagFlag == FilmSimple.Source.MAOYAN)
+            FilmDetailService.startActionMaoYan(this,Url,mConnection);
     }
 
     /*活动启动必需*/
-    public static Intent newIntent(Context packageContext, String URL) {
-        Intent intent = new Intent(packageContext, SearchService.class);
+    public static Intent newIntent(Context packageContext, String URL,FilmSimple.Source source) {
+        Intent intent = new Intent(packageContext, FilmDetailsActivity.class);
         intent.putExtra(EXTRA_URL, URL);
+        intent.putExtra(EXTRA_SOURCE,source);
         return intent;
     }
+
 
     private Handler handler = new Handler() {
         @Override
@@ -88,32 +146,10 @@ public class FilmDetailsActivity extends AppCompatActivity {
             super.handleMessage(msg);
             //此处更新UI
             String str = new String();
-        /*    String tag = "";
-            switch (sTagFlag ){
-                case DOUBAN:
-                    tag = "douban";
-                    break;
-                case MAOYAN:
-                    tag = "maoyan";
-                    break;
-                default:
-            }
             switch (msg.obj.toString()){
-                case"SEARCH_SUCCESS":
+                case "SUCCESS":
                     str = "搜索成功";
-                    currentFragment = new SearchResultFragment().newInstance(sTagFlag, mFilmSimples);
-                    if(isFirst) {
-                        isFirst = false;
-                        fm.beginTransaction()
-                                .add(R.id.source_fragment_container, currentFragment)
-                                .commit();
-                    }else {
-                        getSupportFragmentManager().beginTransaction().add(R.id.source_fragment_container, currentFragment, tag).commit();
-                    }
-                    //updateUI();
-                    break;
-                case "NOT_EXISTENT"://无记录
-                    str = "无记录";
+                    upDataUI();
                     break;
                 case "NETWORK_ERROR"://网络异常
                     str = "网络异常";
@@ -121,9 +157,40 @@ public class FilmDetailsActivity extends AppCompatActivity {
                 default:
 
             }
-            Toast.makeText(getApplication(),str,Toast.LENGTH_LONG).show();*/
+            Toast.makeText(getApplication(),str,Toast.LENGTH_LONG).show();
         }
     };
+
+    void upDataUI(){
+
+        Glide.with(this)
+                .load(mFilmSimple.getPic())
+                .into(mFilmPosterImageView);
+        mTitleTextView.setText(mFilmSimple.getTitle());
+        String classifies = new String();
+        for(String str:mFilmSimple.getClassify()){
+            classifies = classifies+str+'/';
+        }
+        mClassifyTextView.setText(classifies);
+        mDateTextView.setText("上映时间："+mFilmSimple.getDate());
+        mLastingTextView.setText("片长："+mFilmSimple.getLasting());
+        mScoreTextView.setText(mFilmSimple.getScore()+"");
+        mPeopleNumTextView.setText(mFilmSimple.getNum()+"");
+        mBreifTextView.setText(mFilmSimple.getBreif());
+
+        upDateActorList();
+        upDateCommentList();
+    }
+
+    void upDateActorList(){
+        mActorsAdapter = new ActorsAdapter(mFilmSimple.getActors());
+        mActorsRecyclerView.setAdapter(mActorsAdapter);
+    }
+
+    void upDateCommentList(){
+        mCommentsAdapter = new CommentsAdapter(mComments);
+        mCommentsRecyclerView.setAdapter(mCommentsAdapter);
+    }
 
     @Override
     protected void onDestroy() {
