@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.wxy.beanfilm.Bean.Actor;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
+import com.example.wxy.beanfilm.Bean.woffFont;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -202,10 +203,125 @@ public class FilmDetailService extends IntentService {
      * Handle action Baz in the provided background thread wit the provided
      * parameters.
      */
-    private void handleActionMaoYan(String param1) {
+    private void handleActionMaoYan(final String URL) {
         // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        final FilmSimple filmSimple = new FilmSimple();
+        final List<Comment> comments = new ArrayList<Comment>();
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                try{
+                    Document doc = Jsoup.connect(URL)
+                            .get();
+                    woffFont mfont = getwoffFont(doc);
+                    String mTitle = doc.select("div.banner").select("h3").text();//标题
+                    String mUri = URL;//详情页面链接
+                    String mPic = doc.select("div.banner").select("img").attr("src");//图片链接
+                    String mBreif = doc.select("div.mod-content").first().select("span").text();//简介
+                    String mScoreSTR = doc.select("div[class^=rating_self]").select("strong").text();//分数
+                    float mScore;
+                    if(mScoreSTR.equals(""))
+                        mScore = 0;
+                    else
+                        mScore = Float.parseFloat(mScoreSTR);//评分
+
+                    String mNumSTR = doc.select("div.rating_sum").select("span").text();//评价人数
+                    int mNum;
+                    if(mNumSTR.equals(""))
+                        mNum = 0;
+                    else
+                        mNum = Integer.parseInt(mNumSTR);
+
+                    String mDate = doc.select("div.banner").select("li.ellipsis").last().text();//上映时间
+                    String mLasting = doc.select("div.banner").select("li.ellipsis").next().text();//片长
+                    Elements ClassifyLinks = doc.select("div[id=info]").select("span[property=v:genre]");
+                    List<String> classifies = new ArrayList<String>();//分类集合
+                    String classSTR = doc.select("div.banner").select("li.ellipsis").first().text();
+                    String[] classArray = classSTR.split(",");
+                    for(int i = 0;i<classArray.length;i++){
+                        classifies.add(classArray[i]);
+                    }
+                    List<Actor> actors = new ArrayList<Actor>();
+                    Elements ActorLinks = doc.select("div.celebrity-group");
+                    for(Element e:ActorLinks){//影人列表
+
+                        int type = 0;
+                        if(e.select("div.celebrity-type").text().equals("导演")){
+                            type = 1;
+                        }else if(e.select("div.celebrity-type").text().equals("演员")){
+                            type = 2;
+                        }
+                        Elements celebrityList = e.select("li[class^=celebrity]");
+                        for(Element c:celebrityList){
+                            Actor a = new Actor();
+                            String name = c.select("a.name").text();
+                            Log.d(TAG, "run: 影人"+name);
+                            String role = type==1?"导演":c.select("span.role").text();
+                            String pic = c.select("img.default-img").attr("data-src");
+                            Log.d(TAG, "run: 影人"+pic);
+                            a.setName(name);
+                            a.setRole(role);
+                            a.setPic(pic);
+                            actors.add(a);
+                        }
+                    }
+                    Elements CommitLinks = doc.select("li.comment-container");
+                    for(Element e:CommitLinks){//评论列表
+                        Comment c = new Comment();
+                        String author = e.select("span.name").text();
+                        String date = e.select("div.time").attr("title");
+                        String commitcontext = e.select("div.comment-content").text();
+                        c.setAuthor(author);
+                        c.setDate(date);
+                        c.setContext(commitcontext);
+                        comments.add(c);
+                    }
+
+                    filmSimple.setTitle(mTitle);
+                    filmSimple.setUrl(mUri);
+                    filmSimple.setPic(mPic);
+                    filmSimple.setScore(mScore);
+                    filmSimple.setBreif(mBreif );
+                    filmSimple.setNum(mNum);
+                    filmSimple.setDate(mDate);
+                    filmSimple.setLasting(mLasting);
+                    filmSimple.setClassify(classifies);
+                    filmSimple.setActors(actors);
+
+                    mState = FilmDetailService.State.SUCCESS;
+                    mCallback.onDataChange(mState,filmSimple,comments,mfont);
+                }catch (Exception e){
+                    mState = FilmDetailService.State.NETWORK_ERROR;//网络错误
+                    mCallback.onDataChange(mState,filmSimple,comments);
+                }
+            }
+        }.start();
     }
+
+    woffFont getwoffFont(Document doc){
+
+        String urlSTR = doc.select("style").first().text();
+        String[] strarray = urlSTR.split("url//('|'//)");
+        for(int i=0;i<strarray.length;i++)
+            Log.d(TAG, "getwoffFont: url"+i+"号"+strarray[i]);
+
+        String scoreSTR = doc.select("span.stonefont").first().text();
+        String[] scorearray = scoreSTR.split(";.|;");
+        for(int i=0;i<scorearray.length;i++)
+            Log.d(TAG, "getwoffFont: score"+i+"号"+scorearray[i]);
+
+        String numSTR = doc.select("span.").next().text();
+        String[] numarray = numSTR.split(";.|;");
+        for(int i=0;i<numarray.length;i++)
+            Log.d(TAG, "getwoffFont: num"+i+"号"+numarray[i]);
+        /*String url = new String();
+        if(strarray.length>1)
+            pic = strarray[1];*/
+        woffFont font = new woffFont();
+
+        return font;
+    } ;
 
     /*服务销毁：回收资源*/
     @Override
@@ -221,5 +337,6 @@ public class FilmDetailService extends IntentService {
 
     public static interface Callback {
         void onDataChange(State state,FilmSimple filmSimple,List<Comment> comments);
+        void onDataChange(State state,FilmSimple filmSimple,List<Comment> comments,woffFont font);
     }
 }

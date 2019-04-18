@@ -28,6 +28,7 @@ import com.example.wxy.beanfilm.Bean.Actor;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.FilmSimpleLab;
+import com.example.wxy.beanfilm.Bean.woffFont;
 import com.example.wxy.beanfilm.Fragment.MineFragment;
 import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
 import com.example.wxy.beanfilm.Model.ActorsAdapter;
@@ -56,6 +57,7 @@ public class FilmDetailsActivity extends AppCompatActivity {
     private FilmSimple.Source sTagFlag = FilmSimple.Source.NULL;
     private List<Comment> mComments = new ArrayList<Comment>();
     private FilmDetailService.State mState ;
+    private woffFont mWoffFont;
 
     private FilmDetailService mFilmDetailService;
 
@@ -69,6 +71,16 @@ public class FilmDetailsActivity extends AppCompatActivity {
                 public void onDataChange(FilmDetailService.State state,FilmSimple filmSimple,List<Comment> comments) {
                     mFilmSimple = filmSimple;
                     mComments = comments;
+                    Message msg = new Message();
+                    msg.obj = state;
+                    handler.sendMessage(msg);
+                }
+
+                @Override
+                public void onDataChange(FilmDetailService.State state, FilmSimple filmSimple, List<Comment> comments, woffFont font) {
+                    mFilmSimple = filmSimple;
+                    mComments = comments;
+                    mWoffFont = font;
                     Message msg = new Message();
                     msg.obj = state;
                     handler.sendMessage(msg);
@@ -149,6 +161,8 @@ public class FilmDetailsActivity extends AppCompatActivity {
             switch (msg.obj.toString()){
                 case "SUCCESS":
                     str = "搜索成功";
+                    if(sTagFlag== FilmSimple.Source.MAOYAN)
+                        ;
                     upDataUI();
                     break;
                 case "NETWORK_ERROR"://网络异常
@@ -165,6 +179,7 @@ public class FilmDetailsActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(mFilmSimple.getPic())
+                .centerCrop()
                 .into(mFilmPosterImageView);
         mTitleTextView.setText(mFilmSimple.getTitle());
         String classifies = new String();

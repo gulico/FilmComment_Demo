@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.FilmDetailsActivity;
+import com.example.wxy.beanfilm.Model.SearchFilmAdapter;
 import com.example.wxy.beanfilm.R;
 
 import java.io.Serializable;
@@ -91,69 +92,7 @@ public class SearchResultFragment extends Fragment {
     private void updateUI() {
         //FilmSimpleLab filmSimpleLab = FilmSimpleLab.get(this);
         //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
-        mAdapter = new SearchFilmAdapter(mFilmSimples);
+        mAdapter = new SearchFilmAdapter(mFilmSimples,TYPE);
         mFilmSimplesRecyclerView.setAdapter(mAdapter);
-    }
-    private class SearchFilmHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private FilmSimple mFilmSimple;
-
-        private TextView mTitleTextView;
-        private ImageView mPicImageView;
-        private TextView mInfoTextView;
-
-        public SearchFilmHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_searchresult, parent, false));
-            itemView.setOnClickListener(this);
-            //实例化视图对象
-            mTitleTextView = (TextView)itemView.findViewById(R.id.searchresult_recycler_view_Title);
-            mPicImageView = (ImageView)itemView.findViewById(R.id.searchresult_bk);
-            mInfoTextView = (TextView)itemView.findViewById(R.id.searchresult_recycler_view_info);
-        }
-
-        public void bind(FilmSimple filmSimple) {
-            mFilmSimple = filmSimple;
-            //绑定数据
-            mTitleTextView.setText(mFilmSimple.getTitle());
-            mInfoTextView.setText(mFilmSimple.getInfo());
-            Glide.with(getActivity())
-                    .load(mFilmSimple.getPic())
-                    .into(mPicImageView);
-        }
-
-        @Override
-        public void onClick(View v) {
-            //列表点击事件
-            Toast.makeText(getActivity(),
-                    mFilmSimple.getTitle() + " clicked!"+getAdapterPosition(), Toast.LENGTH_SHORT)
-                    .show();
-            FilmSimple filmSimple = mFilmSimples.get(getAdapterPosition());
-            startActivity(FilmDetailsActivity.newIntent(mAppCompatActivity,filmSimple.getUrl(),TYPE));
-        }
-    }
-
-    private class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmHolder> {
-        private List<FilmSimple> mFilmSimples;
-
-        public SearchFilmAdapter(List<FilmSimple> filmSimples) {
-            mFilmSimples = filmSimples;
-        }
-
-        @Override
-        public SearchFilmHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new SearchFilmHolder(layoutInflater, parent);
-        }
-
-        @Override
-        public void onBindViewHolder(SearchFilmHolder holder, int position) {
-            FilmSimple filmSimple = mFilmSimples.get(position);
-            holder.bind(filmSimple);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mFilmSimples.size();
-        }
     }
 }

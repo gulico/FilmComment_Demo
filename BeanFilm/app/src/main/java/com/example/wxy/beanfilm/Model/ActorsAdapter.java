@@ -49,6 +49,7 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ActorsHold
             mRoleTextView.setText(mActor.getRole());
             Glide.with(mParent.getContext())
                     .load(mActor.getPic())
+                    .centerCrop()
                     .into(mPicImageView);
         }
 

@@ -54,6 +54,9 @@
             android:name=".Model.FilmDetailService"
             android:exported="false">
         </service>
+
+        <activity android:name=".CompareActivity">
+        </activity>
     </application>
 
 </manifest>
