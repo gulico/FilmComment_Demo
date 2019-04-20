@@ -109,6 +109,15 @@ public class FilmDetailsActivity extends AppCompatActivity {
         mAppCompatActivity = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.film_deteail_toolbar);//工具栏
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();//返回
+            }
+        });
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.film_deteail_collapsing_toolbar);
 
         mFilmPosterImageView = (ImageView)findViewById(R.id.film_deteail_poster) ;
@@ -128,12 +137,6 @@ public class FilmDetailsActivity extends AppCompatActivity {
         mCommentsRecyclerView = (RecyclerView) findViewById(R.id.film_deteail_comments_recyclerview);
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
         Intent intent = getIntent();
         String Url = intent.getStringExtra(EXTRA_URL);
         sTagFlag = (FilmSimple.Source)intent.getSerializableExtra(EXTRA_SOURCE);

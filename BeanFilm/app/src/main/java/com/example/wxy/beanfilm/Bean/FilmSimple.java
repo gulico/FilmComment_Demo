@@ -3,59 +3,15 @@ package com.example.wxy.beanfilm.Bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by WXY on 2019/1/24.
  */
 
-public class FilmSimple implements Parcelable {
+public class FilmSimple  implements Serializable {
 
-    protected FilmSimple(Parcel in) {
-        mId = in.readString();
-        mTitle = in.readString();
-        mPic = in.readString();
-        mInfo = in.readString();
-        mBreif = in.readString();
-        mUrl = in.readString();
-        mScore = in.readFloat();
-        mNum = in.readInt();
-        mDate = in.readString();
-        mLasting = in.readString();
-        mClassify = in.createStringArrayList();
-    }
-
-    public static final Creator<FilmSimple> CREATOR = new Creator<FilmSimple>() {
-        @Override
-        public FilmSimple createFromParcel(Parcel in) {
-            return new FilmSimple(in);
-        }
-
-        @Override
-        public FilmSimple[] newArray(int size) {
-            return new FilmSimple[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mId);
-        dest.writeString(mTitle);
-        dest.writeString(mPic);
-        dest.writeString(mInfo);
-        dest.writeString(mBreif);
-        dest.writeString(mUrl);
-        dest.writeFloat(mScore);
-        dest.writeInt(mNum);
-        dest.writeString(mDate);
-        dest.writeString(mLasting);
-        dest.writeStringList(mClassify);
-    }
 
     public enum Source{//来源分类
         NULL,

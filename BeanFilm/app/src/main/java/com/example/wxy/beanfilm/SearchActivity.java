@@ -11,13 +11,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
+import com.example.wxy.beanfilm.Model.CompareService;
 import com.example.wxy.beanfilm.Model.SearchService;
 
 import java.util.List;
@@ -25,16 +28,20 @@ import java.util.List;
 import static com.example.wxy.beanfilm.Bean.FilmSimple.*;
 import static com.example.wxy.beanfilm.Bean.FilmSimple.Source.*;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity{
 
+    private static String TAG = "SearchActivity" ;
     private boolean isFirst = true;
     private static Source sTagFlag = DOUBAN;//换页标志
     private String Search_key = "";
 
     private LinearLayout mLinearLayoutFirstTag;
     private LinearLayout mLinearLayoutSecondTag;
+    private LinearLayout mCompareTag;
     private ImageView mImageViewFirst;
     private ImageView mImageViewSecond;
+
+    private AppCompatActivity mAppCompatActivity;
 
     List<FilmSimple> mFilmSimples;
 
@@ -69,11 +76,13 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        mAppCompatActivity = this;
 
         Intent intent  = getIntent();
         Search_key = intent.getStringExtra("search_key");
         startSearchSercive(Search_key, DOUBAN);
 
+        mCompareTag = (LinearLayout) this.findViewById(R.id.source_nav_compare_button);
         mLinearLayoutFirstTag = (LinearLayout)this.findViewById(R.id.source_nav_first_tag);
         mLinearLayoutSecondTag = (LinearLayout)this.findViewById(R.id.source_nav_second_tag);
         mImageViewFirst = (ImageView)this.findViewById(R.id.source_nav_first_ico);
@@ -115,6 +124,21 @@ public class SearchActivity extends AppCompatActivity {
                     replaceFragment("maoyan");
 
                 }
+            }
+        });
+
+        mCompareTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<FilmSimple> checkedfilmSimples = ((SearchResultFragment)currentFragment).mAdapter.mCheckedFilmSiple;
+                if(checkedfilmSimples.size()==2){
+                    FilmSimple f1 = checkedfilmSimples.get(0);
+                    FilmSimple f2 = checkedfilmSimples.get(1);
+                    startActivity(CompareActivity.newIntent(mAppCompatActivity,f1,f2));
+                }else{
+                    Toast.makeText(mAppCompatActivity,"请选择两个电影",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
@@ -203,4 +227,5 @@ public class SearchActivity extends AppCompatActivity {
         super.onDestroy();
         unbindService(mConnection);
     }
+
 }

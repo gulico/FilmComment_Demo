@@ -10,4 +10,5 @@
     <color name="checked_ico">#4a4a4a</color>
     <color name="nomarl_ico">#969696</color>
     <color name="tile_text">#494949</color>
+    <color name="star">#FFAD2E</color>
 </resources>

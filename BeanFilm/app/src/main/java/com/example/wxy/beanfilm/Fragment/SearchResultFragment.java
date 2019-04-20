@@ -36,7 +36,7 @@ public class SearchResultFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RecyclerView mFilmSimplesRecyclerView;
-    private SearchFilmAdapter mAdapter;
+    public SearchFilmAdapter mAdapter;
     List<FilmSimple> mFilmSimples;
     private AppCompatActivity mAppCompatActivity;
 
@@ -93,6 +93,7 @@ public class SearchResultFragment extends Fragment {
         //FilmSimpleLab filmSimpleLab = FilmSimpleLab.get(this);
         //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
         mAdapter = new SearchFilmAdapter(mFilmSimples,TYPE);
+        mAdapter.setHasStableIds(true);
         mFilmSimplesRecyclerView.setAdapter(mAdapter);
     }
 }

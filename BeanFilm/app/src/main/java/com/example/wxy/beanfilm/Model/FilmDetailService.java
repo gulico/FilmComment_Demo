@@ -215,6 +215,26 @@ public class FilmDetailService extends IntentService {
                     Document doc = Jsoup.connect(URL)
                             .get();
                     woffFont mfont = getwoffFont(doc);
+
+                    String urlSTR = doc.select("p.movie-index-title").first().text();
+                    Log.d(TAG, "getwoffFont: "+urlSTR);
+                    String[] strarray = urlSTR.split("url//('|'//)");
+                    for(int i=0;i<strarray.length;i++)
+                        Log.d(TAG, "getwoffFont: url"+i+"号"+strarray[i]);
+
+                    String scoreSTR = doc.select("div.movie-stats-container").select("span.stonefont").first().text();
+                    Log.d(TAG, "getwoffFont: "+scoreSTR);
+                    String[] scorearray = scoreSTR.split(";.|;");
+                    for(int i=0;i<scorearray.length;i++)
+                        Log.d(TAG, "getwoffFont: score"+i+"号"+scorearray[i]);
+
+                    String numSTR = doc.select("span.stonefont").next().text();
+                    Log.d(TAG, "getwoffFont: "+numSTR);
+                    String[] numarray = numSTR.split(";.|;");
+                    for(int i=0;i<numarray.length;i++)
+                        Log.d(TAG, "getwoffFont: num"+i+"号"+numarray[i]);
+
+
                     String mTitle = doc.select("div.banner").select("h3").text();//标题
                     String mUri = URL;//详情页面链接
                     String mPic = doc.select("div.banner").select("img").attr("src");//图片链接
@@ -290,9 +310,10 @@ public class FilmDetailService extends IntentService {
                     filmSimple.setActors(actors);
 
                     mState = FilmDetailService.State.SUCCESS;
-                    mCallback.onDataChange(mState,filmSimple,comments,mfont);
+                    mCallback.onDataChange(mState,filmSimple,comments);
                 }catch (Exception e){
                     mState = FilmDetailService.State.NETWORK_ERROR;//网络错误
+                    //Log.d(TAG, "getwoffFontrun: "+e);
                     mCallback.onDataChange(mState,filmSimple,comments);
                 }
             }
@@ -301,20 +322,7 @@ public class FilmDetailService extends IntentService {
 
     woffFont getwoffFont(Document doc){
 
-        String urlSTR = doc.select("style").first().text();
-        String[] strarray = urlSTR.split("url//('|'//)");
-        for(int i=0;i<strarray.length;i++)
-            Log.d(TAG, "getwoffFont: url"+i+"号"+strarray[i]);
 
-        String scoreSTR = doc.select("span.stonefont").first().text();
-        String[] scorearray = scoreSTR.split(";.|;");
-        for(int i=0;i<scorearray.length;i++)
-            Log.d(TAG, "getwoffFont: score"+i+"号"+scorearray[i]);
-
-        String numSTR = doc.select("span.").next().text();
-        String[] numarray = numSTR.split(";.|;");
-        for(int i=0;i<numarray.length;i++)
-            Log.d(TAG, "getwoffFont: num"+i+"号"+numarray[i]);
         /*String url = new String();
         if(strarray.length>1)
             pic = strarray[1];*/
