@@ -35,6 +35,7 @@ import com.example.wxy.beanfilm.Model.ActorsAdapter;
 import com.example.wxy.beanfilm.Model.CommentsAdapter;
 import com.example.wxy.beanfilm.Model.FilmDetailService;
 import com.example.wxy.beanfilm.Model.SearchService;
+import com.example.wxy.beanfilm.Model.StarTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,11 @@ public class FilmDetailsActivity extends AppCompatActivity {
     TextView mScoreTextView;//评分
     TextView mPeopleNumTextView;//评分人数
     TextView mBreifTextView;//简介
+    ImageView mStar1;
+    ImageView mStar2;
+    ImageView mStar3;
+    ImageView mStar4;
+    ImageView mStar5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +134,11 @@ public class FilmDetailsActivity extends AppCompatActivity {
         mScoreTextView = (TextView)findViewById(R.id.film_deteail_score_num);
         mPeopleNumTextView = (TextView)findViewById(R.id.film_deteail_person_num);
         mBreifTextView = (TextView)findViewById(R.id.film_deteail_breif);
+        mStar1 = (ImageView)findViewById(R.id.star_n_score_star1) ;
+        mStar2 = (ImageView)findViewById(R.id.star_n_score_star2) ;
+        mStar3 = (ImageView)findViewById(R.id.star_n_score_star3) ;
+        mStar4 = (ImageView)findViewById(R.id.star_n_score_star4) ;
+        mStar5 = (ImageView)findViewById(R.id.star_n_score_star5) ;
 
         mActorsRecyclerView = (RecyclerView) findViewById(R.id.film_deteail_actors_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -193,8 +204,9 @@ public class FilmDetailsActivity extends AppCompatActivity {
         mDateTextView.setText("上映时间："+mFilmSimple.getDate());
         mLastingTextView.setText("片长："+mFilmSimple.getLasting());
         mScoreTextView.setText(mFilmSimple.getScore()+"");
-        mPeopleNumTextView.setText(mFilmSimple.getNum()+"");
+        mPeopleNumTextView.setText(mFilmSimple.getNum()+"人");
         mBreifTextView.setText(mFilmSimple.getBreif());
+        StarTools.setStars(mFilmSimple.getScore(),mStar1,mStar2,mStar3,mStar4,mStar5);
 
         upDateActorList();
         upDateCommentList();

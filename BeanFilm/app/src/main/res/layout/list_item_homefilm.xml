@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:gravity="center">
+    <ImageView
+        android:id="@+id/list_item_homefilm_pic"
+        android:layout_width="120dp"
+        android:layout_height="160dp"/>
+    <TextView
+        android:id="@+id/list_item_homefilm_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tile_text"
+        android:textStyle="bold"
+        android:text=""/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <include
+            android:id="@+id/list_item_homefilm_star"
+            layout="@layout/star_n_score"/>
+        <TextView
+            android:id="@+id/list_item_homefilm_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="7.6"/>
+    </LinearLayout>
+
+
+</LinearLayout>

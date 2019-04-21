@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,10 +17,8 @@ import android.widget.Toast;
 
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.Score;
+import com.example.wxy.beanfilm.Model.ChartTools;
 import com.example.wxy.beanfilm.Model.CompareService;
-import com.example.wxy.beanfilm.Model.Tools;
-
-import java.util.List;
 
 import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
@@ -112,8 +109,8 @@ public class CompareActivity extends AppCompatActivity{
             switch (msg.obj.toString()){
                 case "SUCCESS":
                     str = "搜索成功";
-                    Tools.setColumnChartViewData(columnChartView,mScore1,mScore2);
-                    Tools.setPieChartData(mPieChartView,mScore1,mScore2);
+                    ChartTools.setColumnChartViewData(columnChartView,mScore1,mScore2);
+                    ChartTools.setPieChartData(mPieChartView,mScore1,mScore2);
                     break;
                 case "NETWORK_ERROR"://网络异常
                     str = "网络异常";

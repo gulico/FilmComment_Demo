@@ -10,6 +10,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,11 +24,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.User;
+import com.example.wxy.beanfilm.Model.HomeFilmAdapter;
 import com.example.wxy.beanfilm.Model.LoginService;
 import com.example.wxy.beanfilm.Model.SearchService;
 import com.example.wxy.beanfilm.R;
 import com.example.wxy.beanfilm.SearchActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
@@ -37,6 +45,15 @@ public class HomeFragment extends Fragment {
 
     private String  TAG = "HomeFragment";
     private AppCompatActivity mAppCompatActivity;
+
+    private RecyclerView mHomeFilmRecyclerView;
+    private HomeFilmAdapter mHomeFilmAdapter;
+
+    private List<FilmSimple> mFilmSimples = new ArrayList<>();
+
+    public HomeFragment(List<FilmSimple> newFilmSimples){
+        mFilmSimples = newFilmSimples;
+    }
 
 
     @Override
@@ -56,6 +73,12 @@ public class HomeFragment extends Fragment {
         //将ToolBar设置为ActionBar
         setHasOptionsMenu(true);
         mAppCompatActivity.setSupportActionBar(toolbar);
+
+        mHomeFilmRecyclerView = (RecyclerView) v.findViewById(R.id.frame_home_hotnow_recyclerview);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),2);//两行
+        gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);//横向滚动
+        mHomeFilmRecyclerView.setLayoutManager(gridLayoutManager);
+        upDateHotnowList(mFilmSimples);
         return v;
     }
 
@@ -84,6 +107,11 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
+    }
+
+    public void upDateHotnowList(List<FilmSimple> f){
+        mHomeFilmAdapter = new HomeFilmAdapter(f);
+        mHomeFilmRecyclerView.setAdapter(mHomeFilmAdapter);
     }
 
 

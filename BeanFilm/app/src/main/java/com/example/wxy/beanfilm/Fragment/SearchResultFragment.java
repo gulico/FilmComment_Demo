@@ -81,7 +81,8 @@ public class SearchResultFragment extends Fragment {
         }
 
         mFilmSimplesRecyclerView = (RecyclerView) v.findViewById(R.id.searchresult_recycler_view);
-        mFilmSimplesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mFilmSimplesRecyclerView.setLayoutManager(layoutManager);
         updateUI();
         return v;
     }

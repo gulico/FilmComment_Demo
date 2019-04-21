@@ -27,10 +27,10 @@ import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
 
-public class Tools {
+public class ChartTools {
 
     public static void setColumnChartViewData(ColumnChartView chart, Score s1,Score s2) {
-        String TAG= "Tools";
+        String TAG= "ChartTools";
         //底部标题
         List<String> title = new ArrayList<>();
         //颜色值
