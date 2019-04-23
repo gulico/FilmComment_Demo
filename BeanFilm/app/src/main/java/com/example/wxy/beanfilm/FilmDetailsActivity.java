@@ -1,9 +1,11 @@
 package com.example.wxy.beanfilm;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,15 +37,17 @@ import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
 import com.example.wxy.beanfilm.Model.ActorsAdapter;
 import com.example.wxy.beanfilm.Model.CommentsAdapter;
 import com.example.wxy.beanfilm.Model.FilmDetailService;
+import com.example.wxy.beanfilm.Model.MarkFilmService;
 import com.example.wxy.beanfilm.Model.SearchService;
 import com.example.wxy.beanfilm.Model.StarTools;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.example.wxy.beanfilm.Model.FilmDetailService.State.SUCCESS;
 
-public class FilmDetailsActivity extends AppCompatActivity {
+public class FilmDetailsActivity extends AppCompatActivity implements View.OnClickListener{
 
     private String TAG = "FilmDetailsActivity";
     public static final String EXTRA_URL = "com.example.wxy.beanfilm.EXTRA.URL";
@@ -95,6 +100,28 @@ public class FilmDetailsActivity extends AppCompatActivity {
         }
     };
 
+   private MarkFilmService mMarkFilmService;
+    private ServiceConnection mMarkFilmServiceConnection = new ServiceConnection(){
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //服务连接
+            mMarkFilmService = ((MarkFilmService.MarkFilmBinder)service).getService();
+            mMarkFilmService.setCallback(new MarkFilmService.Callback() {
+                @Override
+                public void onDataChange(MarkFilmService.State state) {
+                    Message msg = new Message();
+                    msg.obj = state;
+                    mMarkFilmhandler.sendMessage(msg);
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            //服务断开
+        }
+    };
+
     ImageView mFilmPosterImageView;//海报
     TextView mTitleTextView;//标题
     TextView mClassifyTextView;//电影分类
@@ -108,6 +135,9 @@ public class FilmDetailsActivity extends AppCompatActivity {
     ImageView mStar3;
     ImageView mStar4;
     ImageView mStar5;
+    LinearLayout mMarkLinearLayout;
+    Button mWannaButton;
+    Button mHasButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,6 +169,11 @@ public class FilmDetailsActivity extends AppCompatActivity {
         mStar3 = (ImageView)findViewById(R.id.star_n_score_star3) ;
         mStar4 = (ImageView)findViewById(R.id.star_n_score_star4) ;
         mStar5 = (ImageView)findViewById(R.id.star_n_score_star5) ;
+        mMarkLinearLayout = (LinearLayout)findViewById(R.id.film_deteail_Layout_mark) ;
+        mWannaButton = (Button)findViewById(R.id.film_deteail_button_wanna);
+        mWannaButton.setOnClickListener(this);
+        mHasButton = (Button)findViewById(R.id.film_deteail_button_has);
+        mHasButton.setOnClickListener(this);
 
         mActorsRecyclerView = (RecyclerView) findViewById(R.id.film_deteail_actors_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -166,6 +201,7 @@ public class FilmDetailsActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -185,7 +221,7 @@ public class FilmDetailsActivity extends AppCompatActivity {
                 default:
 
             }
-            Toast.makeText(getApplication(),str,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplication(),str,Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -210,6 +246,7 @@ public class FilmDetailsActivity extends AppCompatActivity {
 
         upDateActorList();
         upDateCommentList();
+        updateMarkLayout();
     }
 
     void upDateActorList(){
@@ -222,10 +259,69 @@ public class FilmDetailsActivity extends AppCompatActivity {
         mCommentsRecyclerView.setAdapter(mCommentsAdapter);
     }
 
+    void updateMarkLayout(){
+        SharedPreferences userinfo = mAppCompatActivity.getSharedPreferences("account", Context.MODE_PRIVATE);
+        String useremail = userinfo.getString("email","");
+        if(!useremail.equals("")) {//有用户
+            mMarkLinearLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(mConnection);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.film_deteail_button_wanna:
+                setMark("想看",0);
+                break;
+            case R.id.film_deteail_button_has:
+                setMark("看过",5);
+                break;
+        }
+    }
+
+
+    void setMark(String state,int myscore){
+        String source = new String();
+        if(sTagFlag == FilmSimple.Source.DOUBAN)
+            source = "豆瓣";
+        else if(sTagFlag == FilmSimple.Source.MAOYAN)
+            source  = "猫眼";
+        Calendar cal=Calendar.getInstance();
+        String date = ""+cal.get(Calendar.YEAR)+cal.get(Calendar.MONTH)+cal.get(Calendar.DATE);
+        SharedPreferences userinfo = mAppCompatActivity.getSharedPreferences("account", Context.MODE_PRIVATE);
+        int useid = userinfo.getInt("id",-1);
+        MarkFilmService.startActionMARKFILM(this,source,date,mFilmSimple,useid,myscore,state,mMarkFilmServiceConnection);
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler mMarkFilmhandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            //此处更新UI
+            String str = new String();
+            switch (msg.obj.toString()){
+                case "SUCCESS":
+                    str = "标记成功";
+                    updateFilmLabNUI();
+                    break;
+                case "NETWORK_ERROR"://网络异常
+                    str = "网络异常";
+                    break;
+                default:
+
+            }
+            Toast.makeText(getApplication(),str,Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    void updateFilmLabNUI(){
+
+    }
 }

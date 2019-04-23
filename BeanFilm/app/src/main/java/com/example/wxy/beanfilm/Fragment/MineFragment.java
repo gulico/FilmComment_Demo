@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,18 +31,22 @@ import com.example.wxy.beanfilm.R;
 
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by WXY on 2019/1/24.
  */
 
 public class MineFragment extends Fragment {
 
+    private String TAG = "MineFragment";
     private RecyclerView mFilmSimplesRecyclerView;
     private MineFilmAdapter mAdapter;
     private AppCompatActivity mAppCompatActivity;
     private LinearLayout mLinearLayoutUser;
     private TextView mTextViewUserName;
     private ImageView mImageViewUserIcon;
+    private static boolean isFirst  = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,27 +69,13 @@ public class MineFragment extends Fragment {
 
         mTextViewUserName = (TextView)v.findViewById(R.id.mine_user_neme);
         mImageViewUserIcon = (ImageView)v.findViewById(R.id.mine_user_icon);
-        //查看本地是否有可默认登录用户
-        SharedPreferences userinfo = mAppCompatActivity.getSharedPreferences("userinfo", Context.MODE_PRIVATE);
-        String useremail = userinfo.getString("email","");
-        if(!useremail.equals("")){//有用户
-            String username = userinfo.getString("name","");
-            mTextViewUserName.setText(username);
-            //mImageViewUserIcon设置头像
-        }else{//无用户，需要登录
-            mLinearLayoutUser = (LinearLayout)v.findViewById(R.id.mine_user);
-            mLinearLayoutUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intentToLoginActivity = new Intent(mAppCompatActivity, LoginActivity.class);
-                    startActivity(intentToLoginActivity);
-                }
-            });
-        }
+
 
         mFilmSimplesRecyclerView = (RecyclerView) v.findViewById(R.id.MineFilm_recycler_view);
         mFilmSimplesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUI();
+        mLinearLayoutUser = (LinearLayout)v.findViewById(R.id.mine_user);
+        updataUserUI();
+        //updateFilmListUI();
 
         return v;
     }
@@ -107,7 +99,42 @@ public class MineFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateUI() {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case 1:
+                Log.d(TAG, "onActivityResult: 返回了");
+                updataUserUI();
+                break;
+                default:
+        }
+    }
+
+    private void updataUserUI(){
+        //查看本地是否有可默认登录用户
+        SharedPreferences userinfo = mAppCompatActivity.getSharedPreferences("account", Context.MODE_PRIVATE);
+        String useremail = userinfo.getString("email","");
+        if(!useremail.equals("")){//有用户
+            mLinearLayoutUser.setClickable(false);
+            String username = userinfo.getString("name","");
+            mTextViewUserName.setText(username);
+            //mImageViewUserIcon设置头像
+        }else if(isFirst){//无用户，需要登录
+            isFirst = false;
+            mLinearLayoutUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentToLoginActivity = new Intent(mAppCompatActivity, LoginActivity.class);
+                    startActivityForResult(intentToLoginActivity,1);
+                }
+            });
+        }
+    }
+
+
+    private void updateFilmListUI() {
         FilmSimpleLab filmSimpleLab = FilmSimpleLab.get(getActivity());
         List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
         mAdapter = new MineFilmAdapter(filmSimples);

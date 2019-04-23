@@ -10,8 +10,54 @@ import java.util.List;
  * Created by WXY on 2019/1/24.
  */
 
-public class FilmSimple  implements Serializable {
+public class FilmSimple implements Parcelable {
 
+
+    protected FilmSimple(Parcel in) {
+        mId = in.readString();
+        mTitle = in.readString();
+        mPic = in.readString();
+        mInfo = in.readString();
+        mBreif = in.readString();
+        mUrl = in.readString();
+        mScore = in.readFloat();
+        mNum = in.readInt();
+        mDate = in.readString();
+        mLasting = in.readString();
+        mClassify = in.createStringArrayList();
+    }
+
+    public static final Creator<FilmSimple> CREATOR = new Creator<FilmSimple>() {
+        @Override
+        public FilmSimple createFromParcel(Parcel in) {
+            return new FilmSimple(in);
+        }
+
+        @Override
+        public FilmSimple[] newArray(int size) {
+            return new FilmSimple[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mId);
+        parcel.writeString(mTitle);
+        parcel.writeString(mPic);
+        parcel.writeString(mInfo);
+        parcel.writeString(mBreif);
+        parcel.writeString(mUrl);
+        parcel.writeFloat(mScore);
+        parcel.writeInt(mNum);
+        parcel.writeString(mDate);
+        parcel.writeString(mLasting);
+        parcel.writeStringList(mClassify);
+    }
 
     public enum Source{//来源分类
         NULL,

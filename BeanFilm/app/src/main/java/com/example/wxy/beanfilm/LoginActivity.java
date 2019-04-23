@@ -1,5 +1,6 @@
 package com.example.wxy.beanfilm;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView mTextViewRegisterBotton;
     private TextView mTextViewForgetPassword;
     private LoginService mLoginService;
+    private LoginService.LoginState mState;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -45,9 +47,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onDataChange(LoginService.LoginState newloginState) {
                     //此处依然不能更新UI
+                    mState = newloginState;
                     Message msg = new Message();
                     msg.obj = newloginState;
-                    handler.sendMessage(msg);
+                    loginhandler.sendMessage(msg);
                 }
             });
         }
@@ -92,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.login_button:
+                Log.d(TAG, "onClick: 按下登录");
                 startLoginSercive();
                 break;
             case R.id.register_botton:
@@ -113,7 +117,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         bindService(toLoginService,mConnection,BIND_AUTO_CREATE);
     }
 
-    private Handler handler = new Handler() {
+    @SuppressLint("HandlerLeak")
+    private Handler loginhandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -131,6 +136,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 case "LOGIN_SUCCESS":
                     str = "登录成功";
+                    Intent comebackToMine = new Intent();
+                    comebackToMine.putExtra("LoginState",mState);
+                    setResult(RESULT_OK,comebackToMine);
+                    finish();
                     break;
                 default:
                     str = "未知错误";
@@ -139,4 +148,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplication(),str,Toast.LENGTH_LONG).show();
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+    }
 }

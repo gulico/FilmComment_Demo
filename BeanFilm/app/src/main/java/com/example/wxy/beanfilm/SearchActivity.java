@@ -1,5 +1,6 @@
 package com.example.wxy.beanfilm;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -179,6 +180,7 @@ public class SearchActivity extends AppCompatActivity{
         bindService(toSearchService,mConnection,BIND_AUTO_CREATE);
     }
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

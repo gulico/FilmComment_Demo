@@ -66,12 +66,15 @@ public class LoginService extends IntentService {
         RequestBody requestBody = new FormBody.Builder()
                 .add("email",mLoginUser.getEmail())
                 .build();
+        Log.d(TAG, "onHandleIntent: 请求前");
         HttpUtil.sendRequest("http://47.102.100.138:8080//Login",requestBody, new okhttp3.Callback(){
 
             @Override
             public void onFailure(Call call, IOException e) {
                 //默认网络异常
                 loginState = LoginState.NETWORK_ERROR;
+                System.out.println("错误！"+e);
+                mCallback.onDataChange(loginState);
             }
 
             @Override
