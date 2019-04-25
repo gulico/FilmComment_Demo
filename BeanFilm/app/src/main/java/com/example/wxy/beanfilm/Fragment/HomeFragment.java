@@ -1,17 +1,11 @@
 package com.example.wxy.beanfilm.Fragment;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -22,20 +16,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.wxy.beanfilm.Bean.FilmSimple;
-import com.example.wxy.beanfilm.Bean.User;
-import com.example.wxy.beanfilm.Model.HomeFilmAdapter;
-import com.example.wxy.beanfilm.Model.LoginService;
-import com.example.wxy.beanfilm.Model.SearchService;
+import com.example.wxy.beanfilm.Model.Adapter.HomeFilmAdapter;
 import com.example.wxy.beanfilm.R;
 import com.example.wxy.beanfilm.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.BIND_AUTO_CREATE;
 
 /**
  * Created by WXY on 2019/1/24.

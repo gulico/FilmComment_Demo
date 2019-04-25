@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,10 +20,7 @@ import android.widget.Toast;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Fragment.HomeFragment;
 import com.example.wxy.beanfilm.Fragment.MineFragment;
-import com.example.wxy.beanfilm.Model.ActorsAdapter;
-import com.example.wxy.beanfilm.Model.HomeFilmAdapter;
 import com.example.wxy.beanfilm.Model.HomeHotFilmsService;
-import com.example.wxy.beanfilm.Model.SearchService;
 
 import java.util.ArrayList;
 import java.util.List;

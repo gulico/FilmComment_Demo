@@ -79,9 +79,8 @@ public class CompareActivity extends AppCompatActivity{
         });
 
         Intent intent = getIntent();
-        FilmSimple f1 = (FilmSimple) intent.getSerializableExtra("EXTRA_FILM1");
-        Log.d(TAG, "onCreate: "+f1.getUrl());
-        FilmSimple f2 = (FilmSimple) intent.getSerializableExtra("EXTRA_FILM2");
+        FilmSimple f1 = (FilmSimple) intent.getParcelableExtra("EXTRA_FILM1");
+        FilmSimple f2 = (FilmSimple) intent.getParcelableExtra("EXTRA_FILM2");
         CompareService.startAction1(this,f1,f2,mConnection);
 
         columnChartView = (ColumnChartView) this.findViewById(R.id.Compare_ColumnChart);

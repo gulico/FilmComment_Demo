@@ -1,4 +1,4 @@
-package com.example.wxy.beanfilm.Model;
+package com.example.wxy.beanfilm.Model.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wxy.beanfilm.Bean.Comment;
-import com.example.wxy.beanfilm.FilmDetailsActivity;
 import com.example.wxy.beanfilm.R;
 
 import java.util.List;

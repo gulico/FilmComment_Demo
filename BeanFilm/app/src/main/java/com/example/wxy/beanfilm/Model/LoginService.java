@@ -66,7 +66,6 @@ public class LoginService extends IntentService {
         RequestBody requestBody = new FormBody.Builder()
                 .add("email",mLoginUser.getEmail())
                 .build();
-        Log.d(TAG, "onHandleIntent: 请求前");
         HttpUtil.sendRequest("http://47.102.100.138:8080//Login",requestBody, new okhttp3.Callback(){
 
             @Override

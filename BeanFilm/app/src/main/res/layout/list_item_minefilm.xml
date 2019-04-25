@@ -11,6 +11,7 @@
         android:padding="15dp">
 
         <ImageView
+            android:id="@+id/MineFilm_recycler_view_Pic"
             android:layout_width="60dp"
             android:layout_height="80dp"
             android:background="@color/line_gray"/>
@@ -43,13 +44,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="right">
 
-                    <TextView
-                        android:id="@+id/MineFilm_recycler_view_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2019-01-22"
-                        android:textColor="@color/nomarl_text"
-                        android:textSize="10sp"/>
+
                 </LinearLayout>
             </LinearLayout>
 
@@ -58,20 +53,30 @@
                 layout="@layout/star_n_score"/>
 
             <TextView
-                android:id="@+id/MineFilm_recycler_view_directors"
+                android:id="@+id/MineFilm_recycler_view_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/director"
                 android:textColor="@color/nomarl_text"
                 android:textSize="12sp"/>
-
-            <TextView
-                android:id="@+id/MineFilm_recycler_view_actors"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/leader_actor"
-                android:textColor="@color/nomarl_text"
-                android:textSize="12sp"/>
+                android:padding="5dp"
+                android:background="@color/line_gray">
+                <include
+                    android:id="@+id/MineFilm_recycler_view_my_star_n_score"
+                    layout="@layout/star_n_score"/>
+                <TextView
+                    android:id="@+id/MineFilm_recycler_view_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="2019-01-22"
+                    android:textColor="@color/nomarl_text"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

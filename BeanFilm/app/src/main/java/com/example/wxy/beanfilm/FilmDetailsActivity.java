@@ -10,16 +10,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,25 +23,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.wxy.beanfilm.Bean.Actor;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
-import com.example.wxy.beanfilm.Bean.FilmSimpleLab;
 import com.example.wxy.beanfilm.Bean.woffFont;
-import com.example.wxy.beanfilm.Fragment.MineFragment;
-import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
-import com.example.wxy.beanfilm.Model.ActorsAdapter;
-import com.example.wxy.beanfilm.Model.CommentsAdapter;
+import com.example.wxy.beanfilm.Model.Adapter.ActorsAdapter;
+import com.example.wxy.beanfilm.Model.Adapter.CommentsAdapter;
 import com.example.wxy.beanfilm.Model.FilmDetailService;
 import com.example.wxy.beanfilm.Model.MarkFilmService;
-import com.example.wxy.beanfilm.Model.SearchService;
 import com.example.wxy.beanfilm.Model.StarTools;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import static com.example.wxy.beanfilm.Model.FilmDetailService.State.SUCCESS;
 
 public class FilmDetailsActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -293,7 +282,7 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
         else if(sTagFlag == FilmSimple.Source.MAOYAN)
             source  = "猫眼";
         Calendar cal=Calendar.getInstance();
-        String date = ""+cal.get(Calendar.YEAR)+cal.get(Calendar.MONTH)+cal.get(Calendar.DATE);
+        String date = ""+cal.get(Calendar.YEAR)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.DATE);
         SharedPreferences userinfo = mAppCompatActivity.getSharedPreferences("account", Context.MODE_PRIVATE);
         int useid = userinfo.getInt("id",-1);
         MarkFilmService.startActionMARKFILM(this,source,date,mFilmSimple,useid,myscore,state,mMarkFilmServiceConnection);

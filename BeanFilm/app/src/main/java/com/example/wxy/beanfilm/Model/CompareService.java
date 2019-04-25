@@ -104,8 +104,8 @@ public class CompareService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_1.equals(action)) {
-                final FilmSimple FILM1 = (FilmSimple) intent.getSerializableExtra(EXTRA_FILM1);
-                final FilmSimple FILM2 = (FilmSimple) intent.getSerializableExtra(EXTRA_FILM2);
+                final FilmSimple FILM1 = (FilmSimple) intent.getParcelableExtra(EXTRA_FILM1);
+                final FilmSimple FILM2 = (FilmSimple) intent.getParcelableExtra(EXTRA_FILM2);
                 handleAction1(FILM1,FILM2);
             }
             /*else if (ACTION_BAZ.equals(action)) {
