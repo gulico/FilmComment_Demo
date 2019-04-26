@@ -13,6 +13,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <service
+            android:name=".Model.RegisterService"
+            android:exported="false">
+        </service>
+        <service
             android:name=".Model.GetUserFilmsService"
             android:exported="false">
         </service>
@@ -47,7 +51,9 @@
             android:name=".LoginActivity"
             android:label="@string/activity_title">
         </activity>
-        <activity android:name=".SettingActivity">
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/setting">
         </activity>
         <activity
             android:name=".RegisterActivity"

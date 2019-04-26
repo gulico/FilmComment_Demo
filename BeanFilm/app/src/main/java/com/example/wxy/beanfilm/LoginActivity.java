@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startLoginSercive();
                 break;
             case R.id.register_botton:
+                startActivity(RegisterActivity.newIntent(this));
                 break;
             case R.id.forgetpassword_botton:
                 break;
@@ -139,6 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Intent comebackToMine = new Intent();
                     comebackToMine.putExtra("LoginState",mState);
                     setResult(RESULT_OK,comebackToMine);
+                    unbindService(mConnection);
                     finish();
                     break;
                 default:
@@ -152,6 +154,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mConnection);
+
     }
 }

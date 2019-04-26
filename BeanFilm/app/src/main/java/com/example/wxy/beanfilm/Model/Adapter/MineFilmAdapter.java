@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +32,8 @@ public class MineFilmAdapter extends Adapter<MineFilmAdapter.MineFilmHolder> {
         private TextView mInfoTextView;
         private TextView mDateTextView;
 
-        ImageView mStar1;
-        ImageView mStar2;
-        ImageView mStar3;
-        ImageView mStar4;
-        ImageView mStar5;
+        private LinearLayout mStarLinearLayout;
+        private LinearLayout mMyStarLinearLayout;
 
         public MineFilmHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_minefilm, parent, false));
@@ -47,11 +45,8 @@ public class MineFilmAdapter extends Adapter<MineFilmAdapter.MineFilmHolder> {
             mDateTextView = (TextView)itemView.findViewById(R.id.MineFilm_recycler_view_date);
             mInfoTextView = (TextView) itemView.findViewById(R.id.MineFilm_recycler_view_info);
 
-            mStar1 = (ImageView)itemView.findViewById(R.id.star_n_score_star1) ;
-            mStar2 = (ImageView)itemView.findViewById(R.id.star_n_score_star2) ;
-            mStar3 = (ImageView)itemView.findViewById(R.id.star_n_score_star3) ;
-            mStar4 = (ImageView)itemView.findViewById(R.id.star_n_score_star4) ;
-            mStar5 = (ImageView)itemView.findViewById(R.id.star_n_score_star5) ;
+            mStarLinearLayout = (LinearLayout)itemView.findViewById(R.id.MineFilm_recycler_view_star_n_score);
+            mMyStarLinearLayout = (LinearLayout)itemView.findViewById(R.id.MineFilm_recycler_view_my_star_n_score);
         }
 
         public void bind(MarkFilmSimple filmSimple) {
@@ -63,7 +58,12 @@ public class MineFilmAdapter extends Adapter<MineFilmAdapter.MineFilmHolder> {
                     .load(mFilmSimple.getPic())
                     .centerCrop()
                     .into(mPicImageView);
-            StarTools.setStars(mFilmSimple.getScore(),mStar1,mStar2,mStar3,mStar4,mStar5);
+            StarTools.setStars(mFilmSimple.getScore(),mStarLinearLayout);
+            if(mFilmSimple.getState().equals("想看")){
+                mMyStarLinearLayout.setVisibility(View.GONE);
+            }else {
+                StarTools.setStars(mFilmSimple.getMyscore(), mMyStarLinearLayout);
+            }
             mInfoTextView.setText("简介："+mFilmSimple.getInfo());
         }
 

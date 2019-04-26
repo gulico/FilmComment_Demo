@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,11 +29,7 @@ public class HomeFilmAdapter extends RecyclerView.Adapter<HomeFilmAdapter.ViewHo
         private ImageView mPicImageView;
         private TextView mScoreTextView;
         private ViewGroup mParent;
-        ImageView mStar1;
-        ImageView mStar2;
-        ImageView mStar3;
-        ImageView mStar4;
-        ImageView mStar5;
+        private LinearLayout mStarLinearLayout;
 
         public ViewHolder(View view, ViewGroup parent) {
             super(view);
@@ -42,11 +39,7 @@ public class HomeFilmAdapter extends RecyclerView.Adapter<HomeFilmAdapter.ViewHo
             mTitleTextView = (TextView)itemView.findViewById(R.id.list_item_homefilm_name);
             mPicImageView = (ImageView)itemView.findViewById(R.id.list_item_homefilm_pic);
             mScoreTextView = (TextView)itemView.findViewById(R.id.list_item_homefilm_score);
-            mStar1 = (ImageView)itemView.findViewById(R.id.star_n_score_star1) ;
-            mStar2 = (ImageView)itemView.findViewById(R.id.star_n_score_star2) ;
-            mStar3 = (ImageView)itemView.findViewById(R.id.star_n_score_star3) ;
-            mStar4 = (ImageView)itemView.findViewById(R.id.star_n_score_star4) ;
-            mStar5 = (ImageView)itemView.findViewById(R.id.star_n_score_star5) ;
+            mStarLinearLayout = (LinearLayout)itemView.findViewById(R.id.list_item_homefilm_star);
         }
 
         public void bind(FilmSimple filmSimple) {
@@ -58,7 +51,7 @@ public class HomeFilmAdapter extends RecyclerView.Adapter<HomeFilmAdapter.ViewHo
                     .centerCrop()
                     .into(mPicImageView);
             mScoreTextView.setText(mFilmSimple.getScore()+"");
-            StarTools.setStars(mFilmSimple.getScore(),mStar1,mStar2,mStar3,mStar4,mStar5);
+            StarTools.setStars(mFilmSimple.getScore(),mStarLinearLayout);
         }
     }
 

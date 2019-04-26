@@ -23,7 +23,7 @@ public class VPFragment extends Fragment {
     private RecyclerView mFilmSimplesRecyclerView;
     private MineFilmAdapter mAdapter;
     private String mState = "";
-    List<MarkFilmSimple> mFilms = new ArrayList<>();
+    public List<MarkFilmSimple> mFilms = new ArrayList<>();
     //MarkFilmSimpleLab mMarkFilmSimpleLab = MarkFilmSimpleLab.get(getActivity());
 
     public VPFragment(String state){
@@ -40,6 +40,7 @@ public class VPFragment extends Fragment {
     }
 
     public void onTypeClick(List<MarkFilmSimple> filmSimples) {
+        mFilms.clear();
         for(MarkFilmSimple e:filmSimples){
             if(e.getState().equals(mState)){
                 mFilms.add(e);

@@ -119,11 +119,7 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
     TextView mScoreTextView;//评分
     TextView mPeopleNumTextView;//评分人数
     TextView mBreifTextView;//简介
-    ImageView mStar1;
-    ImageView mStar2;
-    ImageView mStar3;
-    ImageView mStar4;
-    ImageView mStar5;
+    LinearLayout mStarLinearLayout;
     LinearLayout mMarkLinearLayout;
     Button mWannaButton;
     Button mHasButton;
@@ -153,11 +149,7 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
         mScoreTextView = (TextView)findViewById(R.id.film_deteail_score_num);
         mPeopleNumTextView = (TextView)findViewById(R.id.film_deteail_person_num);
         mBreifTextView = (TextView)findViewById(R.id.film_deteail_breif);
-        mStar1 = (ImageView)findViewById(R.id.star_n_score_star1) ;
-        mStar2 = (ImageView)findViewById(R.id.star_n_score_star2) ;
-        mStar3 = (ImageView)findViewById(R.id.star_n_score_star3) ;
-        mStar4 = (ImageView)findViewById(R.id.star_n_score_star4) ;
-        mStar5 = (ImageView)findViewById(R.id.star_n_score_star5) ;
+        mStarLinearLayout = (LinearLayout)findViewById(R.id.film_deteail_star);
         mMarkLinearLayout = (LinearLayout)findViewById(R.id.film_deteail_Layout_mark) ;
         mWannaButton = (Button)findViewById(R.id.film_deteail_button_wanna);
         mWannaButton.setOnClickListener(this);
@@ -231,7 +223,7 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
         mScoreTextView.setText(mFilmSimple.getScore()+"");
         mPeopleNumTextView.setText(mFilmSimple.getNum()+"人");
         mBreifTextView.setText(mFilmSimple.getBreif());
-        StarTools.setStars(mFilmSimple.getScore(),mStar1,mStar2,mStar3,mStar4,mStar5);
+        StarTools.setStars(mFilmSimple.getScore(),mStarLinearLayout);
 
         upDateActorList();
         upDateCommentList();

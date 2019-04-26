@@ -36,6 +36,7 @@ import com.example.wxy.beanfilm.LoginActivity;
 import com.example.wxy.beanfilm.Model.Adapter.MyFragmentStatePagerAdapter;
 import com.example.wxy.beanfilm.Model.GetUserFilmsService;
 import com.example.wxy.beanfilm.R;
+import com.example.wxy.beanfilm.SettingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,7 @@ public class MineFragment extends Fragment {
         //initData();
         mLinearLayoutUser = (LinearLayout)v.findViewById(R.id.mine_user);
         updataUserUI();
+        initData();
         return v;
     }
 
@@ -125,6 +127,8 @@ public class MineFragment extends Fragment {
         switch (item.getItemId()){
             case R.id.setting:
                 Toast.makeText(mAppCompatActivity,"点击设置按钮！",Toast.LENGTH_SHORT).show();
+                Intent intentToSettingActivity = new Intent(mAppCompatActivity, SettingActivity.class);
+                startActivityForResult(intentToSettingActivity,2);
                 break;
             default:
         }
@@ -140,7 +144,9 @@ public class MineFragment extends Fragment {
                 Log.d(TAG, "onActivityResult: 返回了");
                 updataUserUI();
                 break;
-                default:
+            case 2:
+                clearUserUI();
+                break;
         }
     }
 
@@ -150,8 +156,6 @@ public class MineFragment extends Fragment {
     }
 
     MyFragmentStatePagerAdapter mMyFragmentStatePagerAdapter ;//想看看过适配器
-    //VPFragment f1;
-    //VPFragment f2;
     private void initData() {
         for (int i=0; i<tabTitle.length; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(tabTitle[i]));
@@ -191,11 +195,27 @@ public class MineFragment extends Fragment {
             mLinearLayoutUser.setClickable(false);
             String username = userinfo.getString("name","");
             mTextViewUserName.setText(username);
-            initData();
+            //initData();
             GetUserFilmsService.startActionGetUserFilms(getActivity(),mGetUserFilmsConnection);
             //mImageViewUserIcon设置头像
-        }else if(isFirst){//无用户，需要登录
-            isFirst = false;
+        }else if(!mLinearLayoutUser.hasOnClickListeners()){//无用户，需要登录
+            mLinearLayoutUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentToLoginActivity = new Intent(mAppCompatActivity, LoginActivity.class);
+                    startActivityForResult(intentToLoginActivity,1);
+                }
+            });
+
+            mTextViewUserName.setText("请登录");
+        }
+    }
+
+    void clearUserUI(){
+        SharedPreferences userinfo = mAppCompatActivity.getSharedPreferences("account", Context.MODE_PRIVATE);
+        String useremail = userinfo.getString("email","");
+        if(!mLinearLayoutUser.isClickable() && useremail.equals("")){//无用户，需要登录
+            mLinearLayoutUser.setClickable(true);
             mLinearLayoutUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -204,6 +224,9 @@ public class MineFragment extends Fragment {
                 }
             });
         }
+        mTextViewUserName.setText("请登录");
+        mMyFragmentStatePagerAdapter.getF1().onTypeClick(new ArrayList<MarkFilmSimple>());
+        mMyFragmentStatePagerAdapter.getF2().onTypeClick(new ArrayList<MarkFilmSimple>());
     }
 
     @SuppressLint("HandlerLeak")
