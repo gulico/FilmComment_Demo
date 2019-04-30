@@ -12,14 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
-    private String TAG = "MyFragmentStatePagerAdapter";
     private String[] tabTilte;
 
     public MyFragmentStatePagerAdapter(FragmentManager fm, String[] tabTitle) {
         super(fm);
         this.tabTilte = tabTitle;
-        Log.d(TAG, "MyFragmentStatePagerAdapter: 创建");
-
     }
 
     private VPFragment f1 ;
@@ -49,3 +46,4 @@ public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         return tabTilte.length;
     }
 }
+

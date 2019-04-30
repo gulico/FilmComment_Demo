@@ -14,6 +14,7 @@ import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
 import com.example.wxy.beanfilm.Bean.RequestParameter;
 import com.example.wxy.beanfilm.Bean.woffFont;
 
+import org.litepal.crud.DataSupport;
 import org.python.antlr.ast.Str;
 
 import java.io.IOException;
@@ -119,7 +120,8 @@ public class MarkFilmService extends IntentService {
         // TODO: Handle action Foo
         //throw new UnsupportedOperationException("Not yet implemented");
         MarkFilmSimple markfilm = new MarkFilmSimple(-1,film.getTitle(),film.getScore(),state,date,film.getBreif(),mystar,userid,film.getPic(),source,film.getUrl());
-
+        DataSupport.deleteAll(MarkFilmSimple.class,"url = ?",markfilm.getUrl());//删除之前有的记录
+        markfilm.save();//保存到本地数据库
         setRequestParameter("title",markfilm.getTitle());
         setRequestParameter("score",markfilm.getScore()+"");
         setRequestParameter("state",markfilm.getState());

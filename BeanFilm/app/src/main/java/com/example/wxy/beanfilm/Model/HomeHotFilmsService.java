@@ -69,8 +69,6 @@ public class HomeHotFilmsService extends IntentService {
     public static void startActionFoo(Context context, ServiceConnection mConnection) {
         Intent intent = new Intent(context, HomeHotFilmsService.class);
         intent.setAction(ACTION_FOO);
-        //intent.putExtra(EXTRA_PARAM1, param1);
-        //intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
         context.bindService(intent,mConnection,BIND_AUTO_CREATE);
     }
@@ -80,8 +78,6 @@ public class HomeHotFilmsService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_FOO.equals(action)) {
-                //final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                //final String param2 = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionFoo();
             }
         }
@@ -92,16 +88,12 @@ public class HomeHotFilmsService extends IntentService {
      * parameters.
      */
     private void handleActionFoo() {
-        // TODO: Handle action Foo
-        //throw new UnsupportedOperationException("Not yet implemented");
         final List<FilmSimple> filmSimples = new ArrayList();
         new Thread(){
             @Override
             public void run() {
                 super.run();
                 try{
-                    //FilmSimpleLab filmSimpleLab = FilmSimpleLab.get(getBaseContext());
-
                     Document doc = Jsoup.connect("https://movie.douban.com/")
                             .get();
                     Elements titleLinks = doc.select("li[class^=ui-slide-item]");
@@ -122,20 +114,16 @@ public class HomeHotFilmsService extends IntentService {
                         f.setUrl(mUri);
                         f.setPic(mPic);
                         f.setScore(mScore);
-                        //filmSimpleLab.addFilmSimleLab(f);
                         filmSimples.add(f);
                     }
-                    //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
 
                     if(filmSimples.size()==0)
                         mState = HomeHotFilmsService.State.NOT_EXISTENT;//搜索结果不存在
                     else
                         mState = HomeHotFilmsService.State.SEARCH_SUCCESS;//搜索结果大于等于1
-                    //Log.d(TAG, "run: mSearchState"+mSearchState);
                     mCallback.onDataChange(mState,filmSimples);
                 }catch (Exception e){
                     mState = HomeHotFilmsService.State.NETWORK_ERROR;//网络错误
-                    //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
                     mCallback.onDataChange(mState,filmSimples);
                 }
             }

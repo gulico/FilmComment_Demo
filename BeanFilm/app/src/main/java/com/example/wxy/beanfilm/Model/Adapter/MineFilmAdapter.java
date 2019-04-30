@@ -19,7 +19,6 @@ import com.example.wxy.beanfilm.R;
 import java.util.List;
 
 public class MineFilmAdapter extends Adapter<MineFilmAdapter.MineFilmHolder> {
-    private String TAG = "MineFilmAdapter";
     private List<MarkFilmSimple> mFilmSimples;
 
     class MineFilmHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -78,7 +77,6 @@ public class MineFilmAdapter extends Adapter<MineFilmAdapter.MineFilmHolder> {
 
     public MineFilmAdapter(List<MarkFilmSimple> filmSimples) {
         mFilmSimples = filmSimples;
-        Log.d(TAG, "MineFilmAdapter: 大小"+mFilmSimples.size());
     }
 
     @Override

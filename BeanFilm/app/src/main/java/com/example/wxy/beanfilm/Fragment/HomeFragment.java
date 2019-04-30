@@ -57,17 +57,19 @@ public class HomeFragment extends Fragment {
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.toobar_frame_home);
 
         mAppCompatActivity = ((AppCompatActivity) getActivity());
-
-        //将ToolBar设置为ActionBar
         setHasOptionsMenu(true);
         mAppCompatActivity.setSupportActionBar(toolbar);
 
         mHomeFilmRecyclerView = (RecyclerView) v.findViewById(R.id.frame_home_hotnow_recyclerview);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),2);//两行
-        gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);//横向滚动
         mHomeFilmRecyclerView.setLayoutManager(gridLayoutManager);
         upDateHotnowList(mFilmSimples);
         return v;
+    }
+
+    public void upDateHotnowList(List<FilmSimple> f){
+        mHomeFilmAdapter = new HomeFilmAdapter(f);
+        mHomeFilmRecyclerView.setAdapter(mHomeFilmAdapter);
     }
 
     @Override
@@ -82,7 +84,6 @@ public class HomeFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {//提交查询内容
-                //startSearchSercive(query);
                 Intent intent = new Intent(mAppCompatActivity, SearchActivity.class);
                 intent.putExtra("search_key",query);
                 startActivity(intent);
@@ -96,11 +97,4 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-    public void upDateHotnowList(List<FilmSimple> f){
-        mHomeFilmAdapter = new HomeFilmAdapter(f);
-        mHomeFilmRecyclerView.setAdapter(mHomeFilmAdapter);
-    }
-
-
 }

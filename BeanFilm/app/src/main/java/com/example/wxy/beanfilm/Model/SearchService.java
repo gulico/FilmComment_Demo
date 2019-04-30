@@ -104,14 +104,12 @@ public class SearchService extends IntentService {
                             mScore = Float.parseFloat(mScoreSTR);//评分
 
                         String mInfo = e.select("div.title").select("span.subject-cast").text();//介绍
-                        //System.out.print(mTitle+mUri+mPic+mScore+"\n");
                       FilmSimple f = new FilmSimple();
                         f.setTitle(mTitle);
                         f.setUrl(mUri);
                         f.setPic(mPic);
                         f.setScore(mScore);
                         f.setInfo(mInfo);
-                        //filmSimpleLab.addFilmSimleLab(f);
                         filmSimples.add(f);
                     }
                     //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
@@ -143,13 +141,17 @@ public class SearchService extends IntentService {
                     Document doc = Jsoup.connect("https://maoyan.com/query?kw="+mSearchkey+"&type=0")
                             .get();
                     Elements Links1 = doc.select("dd");
-
                     for(Element e:Links1){
-                        String mTitle = e.select("div[class$=movie-item-title]").select("a").text();//标题
-                        String mUri = "https://maoyan.com"+e.select("div.movie-item").select("a").attr("href");//详情页面链接
-                        String mPic = e.select("div.movie-poster").select("img").attr("data-src");//图片链接
-                        String mScoreSTR = e.select("i.integer").text()+e.select("i.fraction").text();
-                        //Log.d(TAG, "run: "+mScoreSTR);
+                        String mTitle = e.select("div[class$=movie-item-title]")
+                                .select("a").text();//标题
+                        String mUri = "https://maoyan.com"+e.select("div.movie-item")
+                                .select("a")
+                                .attr("href");//详情页面链接
+                        String mPic = e.select("div.movie-poster")
+                                .select("img")
+                                .attr("data-src");//图片链接
+                        String mScoreSTR = e.select("i.integer").text()
+                                +e.select("i.fraction").text();
                         float mScore;
                         if(mScoreSTR.equals(""))
                             mScore = 0;

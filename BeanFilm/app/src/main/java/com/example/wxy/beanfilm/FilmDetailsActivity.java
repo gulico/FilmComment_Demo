@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,12 +27,16 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
+import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
 import com.example.wxy.beanfilm.Bean.woffFont;
 import com.example.wxy.beanfilm.Model.Adapter.ActorsAdapter;
 import com.example.wxy.beanfilm.Model.Adapter.CommentsAdapter;
 import com.example.wxy.beanfilm.Model.FilmDetailService;
+import com.example.wxy.beanfilm.Model.InfoDialog;
 import com.example.wxy.beanfilm.Model.MarkFilmService;
 import com.example.wxy.beanfilm.Model.StarTools;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -228,6 +234,8 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
         upDateActorList();
         upDateCommentList();
         updateMarkLayout();
+        upDataButton();
+
     }
 
     void upDateActorList(){
@@ -248,6 +256,23 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    void upDataButton(){
+        List<MarkFilmSimple> filmSimples = DataSupport
+                .where("url = ?",mFilmSimple.getUrl())
+                .find(MarkFilmSimple.class);
+        if(filmSimples.size()>0){
+            MarkFilmSimple film = filmSimples.get(0);
+            if(film.getState().equals("想看")){
+                mWannaButton.setText("已想看");
+                mWannaButton.setEnabled(false);
+            }else if(film.getState().equals("看过")){
+                mWannaButton.setEnabled(false);
+                mHasButton.setText("已看过");
+                mHasButton.setEnabled(false);
+            }
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -261,13 +286,27 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
                 setMark("想看",0);
                 break;
             case R.id.film_deteail_button_has:
-                setMark("看过",5);
+                final InfoDialog infoDialog = new InfoDialog.Builder(this)
+                        .setStars(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                return false;
+                            }
+                        })
+                        .setMessage("请选择星级")
+                        .setButton("确定", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //
+                            }
+                        }).create();
+                infoDialog.show();
                 break;
         }
     }
+    public int MyStars = 0;
 
-
-    void setMark(String state,int myscore){
+    public void setMark(String state,int myscore){
         String source = new String();
         if(sTagFlag == FilmSimple.Source.DOUBAN)
             source = "豆瓣";
@@ -290,7 +329,7 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
             switch (msg.obj.toString()){
                 case "SUCCESS":
                     str = "标记成功";
-                    updateFilmLabNUI();
+                    upDataButton();
                     break;
                 case "NETWORK_ERROR"://网络异常
                     str = "网络异常";
@@ -302,7 +341,4 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
         }
     };
 
-    void updateFilmLabNUI(){
-
-    }
 }

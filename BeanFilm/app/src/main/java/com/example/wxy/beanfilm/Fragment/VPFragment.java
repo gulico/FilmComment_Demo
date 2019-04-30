@@ -14,7 +14,10 @@ import com.example.wxy.beanfilm.Bean.MarkFilmSimpleLab;
 import com.example.wxy.beanfilm.Model.Adapter.MineFilmAdapter;
 import com.example.wxy.beanfilm.R;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class VPFragment extends Fragment {
@@ -46,6 +49,19 @@ public class VPFragment extends Fragment {
                 mFilms.add(e);
             }
         }
+        Collections.reverse(mFilms);
+        updateFilmListUI();
+    }
+
+    public void getLocalData(){
+        mFilms.clear();
+        List<MarkFilmSimple> films = DataSupport.findAll(MarkFilmSimple.class);//从而本地数据库读取
+        for(MarkFilmSimple e:films){
+            if(e.getState().equals(mState)){
+                mFilms.add(e);
+            }
+        }
+        Collections.reverse(mFilms);
         updateFilmListUI();
     }
 

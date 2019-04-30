@@ -141,7 +141,6 @@ public class MineFragment extends Fragment {
 
         switch (requestCode){
             case 1:
-                Log.d(TAG, "onActivityResult: 返回了");
                 updataUserUI();
                 break;
             case 2:
@@ -154,7 +153,6 @@ public class MineFragment extends Fragment {
         mViewPager1 = (ViewPager) rootView.findViewById(R.id.mViewPager1);
         mTabLayout = (TabLayout) rootView.findViewById(R.id.mTabLayout);
     }
-
     MyFragmentStatePagerAdapter mMyFragmentStatePagerAdapter ;//想看看过适配器
     private void initData() {
         for (int i=0; i<tabTitle.length; i++) {
@@ -164,7 +162,6 @@ public class MineFragment extends Fragment {
         mTabLayout.setSelectedTabIndicatorColor(Color.parseColor("#7CCD7C"));
         mTabLayout.setTabTextColors(Color.GRAY, Color.parseColor("#41bd56"));
 
-
         mMyFragmentStatePagerAdapter = new MyFragmentStatePagerAdapter(getChildFragmentManager(),tabTitle);
         mViewPager1.setAdapter(mMyFragmentStatePagerAdapter);
         mViewPager1.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
@@ -173,6 +170,11 @@ public class MineFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager1.setCurrentItem(tab.getPosition());
+                int position = mViewPager1.getCurrentItem();
+                if(position==0)
+                    mMyFragmentStatePagerAdapter.getF1().getLocalData();
+                else if(position==1)
+                    mMyFragmentStatePagerAdapter.getF2().getLocalData();
             }
 
             @Override

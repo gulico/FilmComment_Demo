@@ -22,6 +22,8 @@ import com.example.wxy.beanfilm.Fragment.HomeFragment;
 import com.example.wxy.beanfilm.Fragment.MineFragment;
 import com.example.wxy.beanfilm.Model.HomeHotFilmsService;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LitePal.getDatabase();
+
         mLinearLayoutHomeTag = (LinearLayout)this.findViewById(R.id.main_nav_home_tag);
         mLinearLayoutMineTag = (LinearLayout)this.findViewById(R.id.main_nav_mine_tag);
         mTextViewHome = (TextView)this.findViewById(R.id.main_nav_home_text);
@@ -113,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //单击用户Tag
         mLinearLayoutMineTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,9 +154,14 @@ public class MainActivity extends AppCompatActivity {
                     currentFragment = new MineFragment();
                     break;
             }
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, currentFragment, tag).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, currentFragment, tag)
+                    .commit();
         }else {
-            getSupportFragmentManager().beginTransaction().show(currentFragment).commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .show(currentFragment)
+                    .commit();
         }
     }
 

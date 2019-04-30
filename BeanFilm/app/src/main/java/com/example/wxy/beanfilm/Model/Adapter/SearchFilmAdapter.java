@@ -101,7 +101,6 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Vi
         holder.FilmView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //int position = holder.getAdapterPosition();
                 holder.mParent.getContext().startActivity(FilmDetailsActivity.newIntent(v.getContext(),holder.mFilmSimple.getUrl(),TYPE));
             }
         });

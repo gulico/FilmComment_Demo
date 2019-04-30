@@ -1,8 +1,10 @@
 package com.example.wxy.beanfilm.Bean;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
-public class MarkFilmSimple implements Serializable {
+public class MarkFilmSimple extends DataSupport implements Serializable {
     private int id = 0;//电影id
     private String title = "";//标题
     private float score ;//官方评分

@@ -276,10 +276,8 @@ public class FilmDetailService extends IntentService {
                         for(Element c:celebrityList){
                             Actor a = new Actor();
                             String name = c.select("a.name").text();
-                            Log.d(TAG, "run: 影人"+name);
                             String role = type==1?"导演":c.select("span.role").text();
                             String pic = c.select("img.default-img").attr("data-src");
-                            Log.d(TAG, "run: 影人"+pic);
                             a.setName(name);
                             a.setRole(role);
                             a.setPic(pic);

@@ -13,6 +13,8 @@ import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +115,7 @@ public class GetUserFilmsService extends IntentService {
                 mState = parseJSON(responseData);
                 switch (mState){
                     case SUCCESS:
-                        //saveLocalAccount();
+                        saveUserFilms();//保存到本地数据库
                     default:
                         break;
                 }
@@ -131,6 +133,13 @@ public class GetUserFilmsService extends IntentService {
             Log.d(TAG, "parseJSON: "+e.getTitle());
         }
         return State.SUCCESS;
+    }
+
+    private void saveUserFilms(){
+        DataSupport.deleteAll(MarkFilmSimple.class);//清空表
+        for(MarkFilmSimple film:filmSimples){
+            film.save();
+        }
     }
 
     /*服务销毁：回收资源*/
