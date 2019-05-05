@@ -80,7 +80,6 @@ public class LoginService extends IntentService {
             public void onResponse(Call call, Response response) throws IOException {
                 //得到服务器返回的具体内容
                 String responseData = response.body().string();
-                //Log.d(TAG, "onResponse: "+responseData);
                 loginState = parseJSON(responseData);
                 switch (loginState){
                     case LOGIN_SUCCESS:

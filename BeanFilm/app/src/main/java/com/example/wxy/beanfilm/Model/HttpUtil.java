@@ -27,5 +27,4 @@ public class HttpUtil {
                 .build();
         client.newCall(request).enqueue(callback);
     }
-    //回调方法见第一行代码p337
 }

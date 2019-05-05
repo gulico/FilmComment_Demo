@@ -11,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
+
+import org.litepal.crud.DataSupport;
+
 public class SettingActivity extends AppCompatActivity {
 
     LinearLayout mSignOutLinearLayout;
@@ -41,6 +45,7 @@ public class SettingActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = getSharedPreferences("account",MODE_PRIVATE).edit();
                     editor.clear();//清空账户
                     editor.commit();
+                    DataSupport.deleteAll(MarkFilmSimple.class);
                     Toast.makeText(SettingActivity.this,"退出成功",Toast.LENGTH_SHORT).show();
                     Intent comebackToMine = new Intent();
                     setResult(RESULT_OK,comebackToMine);

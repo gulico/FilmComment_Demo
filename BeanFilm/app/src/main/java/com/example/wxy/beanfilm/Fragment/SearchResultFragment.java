@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Model.Adapter.SearchFilmAdapter;
 import com.example.wxy.beanfilm.R;
+import com.example.wxy.beanfilm.SearchActivity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -87,7 +88,7 @@ public class SearchResultFragment extends Fragment {
     private void updateUI() {
         //FilmSimpleLab filmSimpleLab = FilmSimpleLab.get(this);
         //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
-        mAdapter = new SearchFilmAdapter(mFilmSimples,TYPE);
+        mAdapter = new SearchFilmAdapter(mFilmSimples,TYPE,(SearchActivity) getActivity());
         mAdapter.setHasStableIds(true);
         mFilmSimplesRecyclerView.setAdapter(mAdapter);
     }

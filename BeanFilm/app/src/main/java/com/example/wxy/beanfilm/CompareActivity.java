@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,8 @@ import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.Score;
 import com.example.wxy.beanfilm.Model.ChartTools;
 import com.example.wxy.beanfilm.Model.CompareService;
+
+import java.util.List;
 
 import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
@@ -41,9 +44,12 @@ public class CompareActivity extends AppCompatActivity{
             mCompareService = ((CompareService.CompareBinder)service).getService();
             mCompareService.setCallback(new CompareService.Callback() {
                 @Override
-                public void onDataChange(CompareService.State state, Score s1,Score s2) {
-                    mScore1 = s1;
-                    mScore2 = s2;
+                public void onDataChange(CompareService.State state, List<Score> mScores) {
+                    int size = mScores.size();
+                    if(size>0)
+                        mScore1 = mScores.get(0);
+                    if(size>1)
+                        mScore2 = mScores.get(1);
                     Message msg = new Message();
                     msg.obj = state;
                     handler.sendMessage(msg);
@@ -59,6 +65,9 @@ public class CompareActivity extends AppCompatActivity{
 
     ColumnChartView columnChartView;
     PieChartView mPieChartView;
+    //ColumnChartView columnChartViewTotal;
+    LinearLayout mScoreChartLinearLayout;
+    LinearLayout mSourceChartLinearLayout;
     TextView mFilmTitleFirstTextView;
     TextView mFilmTitleSecondTextView;
     @Override
@@ -83,6 +92,9 @@ public class CompareActivity extends AppCompatActivity{
         FilmSimple f2 = (FilmSimple) intent.getParcelableExtra("EXTRA_FILM2");
         CompareService.startAction1(this,f1,f2,mConnection);
 
+        //columnChartViewTotal = (ColumnChartView)this.findViewById(R.id.Compare_ColumnChartTotal);
+        mSourceChartLinearLayout = (LinearLayout)this.findViewById(R.id.Compare_Source);
+        mScoreChartLinearLayout = (LinearLayout)this.findViewById(R.id.Compare_score);
         columnChartView = (ColumnChartView) this.findViewById(R.id.Compare_ColumnChart);
         mPieChartView = (PieChartView)this.findViewById(R.id.Compare_PieChart) ;
         mFilmTitleFirstTextView = (TextView)this.findViewById(R.id.Compare_f1_title) ;
@@ -112,6 +124,8 @@ public class CompareActivity extends AppCompatActivity{
                     str = "搜索成功";
                     ChartTools.setColumnChartViewData(columnChartView,mScore1,mScore2);
                     ChartTools.setPieChartData(mPieChartView,mScore1,mScore2);
+                    //ChartTools.setColumnChartViewDataTotal(columnChartViewTotal,mScore1,mScore2);
+                    ChartTools.setColumnChartViewDataTitle(mScoreChartLinearLayout,mSourceChartLinearLayout,mScore1,mScore2);
                     break;
                 case "NETWORK_ERROR"://网络异常
                     str = "网络异常";

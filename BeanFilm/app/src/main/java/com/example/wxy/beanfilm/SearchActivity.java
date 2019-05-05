@@ -24,6 +24,7 @@ import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
 import com.example.wxy.beanfilm.Model.CompareService;
 import com.example.wxy.beanfilm.Model.SearchService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.wxy.beanfilm.Bean.FilmSimple.*;
@@ -50,6 +51,7 @@ public class SearchActivity extends AppCompatActivity{
     private Fragment currentFragment;
 
     private SearchService mSearchService;
+    public List<FilmSimple> mCheckedFilmSiple = new ArrayList<FilmSimple>();
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -131,10 +133,10 @@ public class SearchActivity extends AppCompatActivity{
         mCompareTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<FilmSimple> checkedfilmSimples = ((SearchResultFragment)currentFragment).mAdapter.mCheckedFilmSiple;
-                if(checkedfilmSimples.size()==2){
-                    FilmSimple f1 = checkedfilmSimples.get(0);
-                    FilmSimple f2 = checkedfilmSimples.get(1);
+                //List<FilmSimple> checkedfilmSimples = ((SearchResultFragment)currentFragment).mAdapter.mCheckedFilmSiple;
+                if(mCheckedFilmSiple.size()==2){
+                    FilmSimple f1 = mCheckedFilmSiple.get(0);
+                    FilmSimple f2 = mCheckedFilmSiple.get(1);
                     startActivity(CompareActivity.newIntent(mAppCompatActivity,f1,f2));
                 }else{
                     Toast.makeText(mAppCompatActivity,"请选择两个电影",Toast.LENGTH_SHORT).show();

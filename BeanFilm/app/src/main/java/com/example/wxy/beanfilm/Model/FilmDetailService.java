@@ -13,6 +13,7 @@ import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.woffFont;
 
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +21,12 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static android.content.ContentValues.TAG;
 
@@ -239,19 +246,6 @@ public class FilmDetailService extends IntentService {
                     String mUri = URL;//详情页面链接
                     String mPic = doc.select("div.banner").select("img").attr("src");//图片链接
                     String mBreif = doc.select("div.mod-content").first().select("span").text();//简介
-                    String mScoreSTR = doc.select("div[class^=rating_self]").select("strong").text();//分数
-                    float mScore;
-                    if(mScoreSTR.equals(""))
-                        mScore = 0;
-                    else
-                        mScore = Float.parseFloat(mScoreSTR);//评分
-
-                    String mNumSTR = doc.select("div.rating_sum").select("span").text();//评价人数
-                    int mNum;
-                    if(mNumSTR.equals(""))
-                        mNum = 0;
-                    else
-                        mNum = Integer.parseInt(mNumSTR);
 
                     String mDate = doc.select("div.banner").select("li.ellipsis").last().text();//上映时间
                     String mLasting = doc.select("div.banner").select("li.ellipsis").next().text();//片长
@@ -296,12 +290,24 @@ public class FilmDetailService extends IntentService {
                         comments.add(c);
                     }
 
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("filmid",URL)
+                            .build();
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url("http://47.102.100.138:8080//GetMaoYanScore")
+                            .post(requestBody)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseData );
+                    filmSimple.setScore(Float.parseFloat(jsonObject.getString("score")));
+                    filmSimple.setNum(Integer.parseInt(jsonObject.getString("num")));
+
                     filmSimple.setTitle(mTitle);
                     filmSimple.setUrl(mUri);
                     filmSimple.setPic(mPic);
-                    filmSimple.setScore(mScore);
                     filmSimple.setBreif(mBreif );
-                    filmSimple.setNum(mNum);
                     filmSimple.setDate(mDate);
                     filmSimple.setLasting(mLasting);
                     filmSimple.setClassify(classifies);

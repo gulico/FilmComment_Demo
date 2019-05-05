@@ -129,9 +129,6 @@ public class GetUserFilmsService extends IntentService {
     private State parseJSON(String jsonData){
         Gson gson = new Gson();
         filmSimples = gson.fromJson(jsonData,new TypeToken<List<MarkFilmSimple>>(){}.getType());
-        for(MarkFilmSimple e:filmSimples){
-            Log.d(TAG, "parseJSON: "+e.getTitle());
-        }
         return State.SUCCESS;
     }
 

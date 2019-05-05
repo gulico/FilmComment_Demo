@@ -118,7 +118,6 @@ public class MarkFilmService extends IntentService {
     final List<RequestParameter> parameter=new ArrayList<>();
     private void handleActionFoo(String source, String date,FilmSimple film,int userid,int mystar,String state) {
         // TODO: Handle action Foo
-        //throw new UnsupportedOperationException("Not yet implemented");
         MarkFilmSimple markfilm = new MarkFilmSimple(-1,film.getTitle(),film.getScore(),state,date,film.getBreif(),mystar,userid,film.getPic(),source,film.getUrl());
         DataSupport.deleteAll(MarkFilmSimple.class,"url = ?",markfilm.getUrl());//删除之前有的记录
         markfilm.save();//保存到本地数据库
@@ -144,7 +143,6 @@ public class MarkFilmService extends IntentService {
         }
 
         RequestBody requestBody =builder.build();
-        // Log.d(TAG, "onHandleIntent: 请求前");
         HttpUtil.sendRequest("http://47.102.100.138:8080//SetMarkFilm",requestBody, new okhttp3.Callback(){
 
             @Override

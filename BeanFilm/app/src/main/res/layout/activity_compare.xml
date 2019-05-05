@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
+                android:id="@+id/Compare_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -33,14 +34,60 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center"
-                    android:gravity="center">
-                    <LinearLayout
-                        android:layout_width="40dp"
-                        android:layout_height="20dp"
-                        android:background="@color/star">
-                    </LinearLayout>
+                    android:gravity="center|right">
                     <TextView
                         android:id="@+id/Compare_f1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10sp"
+                        android:textColor="@color/nomarl_text"/>
+                    <LinearLayout
+                        android:id="@+id/Compare_f1_score"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="@color/star"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center|left">
+                    <LinearLayout
+                        android:id="@+id/Compare_f2_score"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="@color/colorAccent"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/Compare_f2_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10sp"
+                        android:textColor="@color/nomarl_text"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/Compare_Source"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="5dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center|right">
+                    <TextView
+                        android:id="@+id/Compare_f1_Source"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
@@ -53,14 +100,9 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center"
-                    android:gravity="center">
-                    <LinearLayout
-                        android:layout_width="40dp"
-                        android:layout_height="20dp"
-                        android:background="@color/colorAccent">
-                    </LinearLayout>
+                    android:gravity="center|left">
                     <TextView
-                        android:id="@+id/Compare_f2_title"
+                        android:id="@+id/Compare_f2_Source"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""

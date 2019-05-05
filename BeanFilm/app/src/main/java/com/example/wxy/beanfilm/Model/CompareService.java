@@ -11,8 +11,14 @@ import android.util.Log;
 import com.example.wxy.beanfilm.Bean.Actor;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
+import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
 import com.example.wxy.beanfilm.Bean.Score;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +26,12 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -120,63 +132,118 @@ public class CompareService extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
+    List<Score> mScores = new ArrayList<Score>();
     private void handleAction1(final FilmSimple f1, final FilmSimple f2) {
-        final Score s1 = new Score();
-        final Score s2 = new Score();
+
         // TODO: Handle action Foo
         new Thread(){
             @Override
             public void run() {
                 super.run();
                 try{
-
-                    for(int i = 0;i<2;i++){
-                        String URL = i==0?f1.getUrl():f2.getUrl();
-                        Document doc = Jsoup.connect(URL)
-                                .get();
-                        Log.d(TAG, "run: "+URL);
-                        //String mTitle = doc.select("div[id=mainpic]").select("img").attr("alt");//标题
-                        //String mUri = URL;//详情页面链接
-                        String mScoreSTR = doc.select("div[class^=rating_self]").select("strong").text();//分数
-                        float mScore;
-                        if(mScoreSTR.equals(""))
-                            mScore = 0;
-                        else
-                            mScore = Float.parseFloat(mScoreSTR);
-
-                        String mNumSTR = doc.select("div.rating_sum").select("span").text();//评价人数
-                        int mNum;
-                        if(mNumSTR.equals(""))
-                            mNum = 0;
-                        else
-                            mNum = Integer.parseInt(mNumSTR);
-
-                        Elements startsLink = doc.select("div.ratings-on-weight").select("span.rating_per");//星级
-                        (i==0?s1:s2).setScore(mScore);
-                        (i==0?s1:s2).setNum(mNum);
-                        float[] stars = new float[5];
-                        int j = 0;
-                        for(Element e:startsLink){
-                            String starSTR = e.text();
-                            Log.d(TAG, "run: "+starSTR);
-                            String[] strarray = starSTR.split("%");
-                            String star = new String();
-                            star = strarray[0];
-                            stars[j++] = Float.parseFloat(star);
-                            Log.d(TAG, "run: "+stars[j-1]);
-                        }
-                        (i==0?s1:s2).setStars(stars);
-                    }
-
+                    if(f1.getUrl().indexOf("douban")!=-1)
+                        f1.setSource(FilmSimple.Source.DOUBAN);
+                    else f1.setSource(FilmSimple.Source.MAOYAN);
+                    if(f2.getUrl().indexOf("douban")!=-1)
+                        f2.setSource(FilmSimple.Source.DOUBAN);
+                    else f2.setSource(FilmSimple.Source.MAOYAN);
+                    if(f1.getSource()==FilmSimple.Source.DOUBAN)
+                        mScores.add(DouBan(f1));
+                    else if (f1.getSource()==FilmSimple.Source.MAOYAN)
+                        mScores.add(MaoYan(f1));
+                    Log.d(TAG, "run: "+mScores.get(0));
+                    if(f2.getSource()==FilmSimple.Source.DOUBAN)
+                        mScores.add(DouBan(f2));
+                    else if (f2.getSource()==FilmSimple.Source.MAOYAN)
+                        mScores.add(MaoYan(f2));
+                    Log.d(TAG, "run: "+mScores.get(1));
                     mState = CompareService.State.SUCCESS;
-                    mCallback.onDataChange(mState,s1,s2);
+                    mCallback.onDataChange(mState,mScores);
                 }catch (Exception e){
                     mState = CompareService.State.NETWORK_ERROR;//网络错误
-                    mCallback.onDataChange(mState,s1,s2);
+                    mCallback.onDataChange(mState,mScores);
                 }
             }
         }.start();
     }
+
+    private Score DouBan(FilmSimple filmSimple){
+        Score score = new Score();
+        try {
+            String URL = filmSimple.getUrl();
+            Document doc = Jsoup.connect(URL)
+                    .get();
+            Log.d(TAG, "run: " + URL);
+            String mScoreSTR = doc.select("div[class^=rating_self]").select("strong").text();//分数
+            float mScore;
+            if (mScoreSTR.equals(""))
+                mScore = 0;
+            else
+                mScore = Float.parseFloat(mScoreSTR);
+
+            String mNumSTR = doc.select("div.rating_sum").select("span").text();//评价人数
+            int mNum;
+            if (mNumSTR.equals(""))
+                mNum = 0;
+            else
+                mNum = Integer.parseInt(mNumSTR);
+
+            Elements startsLink = doc.select("div.ratings-on-weight").select("span.rating_per");//星级
+            filmSimple.setScore(mScore);
+            filmSimple.setNum(mNum);
+            float[] stars = new float[5];
+            int j = 0;
+            for (Element e : startsLink) {
+                String starSTR = e.text();
+                Log.d(TAG, "run: " + starSTR);
+                String[] strarray = starSTR.split("%");
+                String star = new String();
+                star = strarray[0];
+                stars[j++] = Float.parseFloat(star);
+                Log.d(TAG, "run: " + stars[j - 1]);
+            }
+
+            score.setStars(stars);
+            score.setNum(mNum);
+            score.setScore(mScore);
+            score.setTitle(filmSimple.getTitle());
+            score.setSource(filmSimple.getSource());
+        } catch (Exception e){
+        }
+        return score;
+    }
+
+    private Score MaoYan(FilmSimple filmSimple){
+        Score score = new Score();
+        try {
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("filmid",filmSimple.getUrl())
+                    .build();
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("http://47.102.100.138:8080//GetMaoYanScore")
+                    .post(requestBody)
+                    .build();
+            Response response = client.newCall(request).execute();
+            String responseData = response.body().string();
+            score = parseJSON(responseData);
+            score.setTitle(filmSimple.getTitle());
+            score.setSource(filmSimple.getSource());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return score;
+    }
+    /*解析Json数据*/
+    private Score parseJSON(String jsonData) throws JSONException {
+        Score score = new Score();
+        JSONObject jsonObject = new JSONObject(jsonData);
+        score.setScore(Float.parseFloat(jsonObject.getString("score")));
+        score.setNum(Integer.parseInt(jsonObject.getString("num")));
+        return score;
+    }
+
+
 
     /**
      * Handle action Baz in the provided background thread with the provided
@@ -199,7 +266,7 @@ public class CompareService extends IntentService {
     }
 
     public static interface Callback {
-        void onDataChange(State state,Score s1,Score s2);
+        void onDataChange(State state,List<Score> mScore);
     }
 
 }

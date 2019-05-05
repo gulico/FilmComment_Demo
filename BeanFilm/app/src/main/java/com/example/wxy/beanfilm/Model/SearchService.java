@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.example.wxy.beanfilm.Bean.FilmSimple.Source.DOUBAN;
+import static com.example.wxy.beanfilm.Bean.FilmSimple.Source.MAOYAN;
 
 public class SearchService extends IntentService {
 
@@ -110,6 +111,7 @@ public class SearchService extends IntentService {
                         f.setPic(mPic);
                         f.setScore(mScore);
                         f.setInfo(mInfo);
+                        f.setSource(DOUBAN);
                         filmSimples.add(f);
                     }
                     //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
@@ -165,6 +167,7 @@ public class SearchService extends IntentService {
                         f.setPic(mPic);
                         f.setScore(mScore);
                         f.setInfo(mInfo);
+                        f.setSource(MAOYAN);
                         //filmSimpleLab.addFilmSimleLab(f);
                         filmSimples.add(f);
                     }

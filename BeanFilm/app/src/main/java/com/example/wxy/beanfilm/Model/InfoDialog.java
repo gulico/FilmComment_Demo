@@ -57,7 +57,7 @@ public class InfoDialog extends Dialog{
         }
 
         /**
-         * Use resource id as Dialog icon
+         * 使用资源ID方式引入icon
          */
         public Builder setIcon(int resId) {
             //mIcon.setImageResource(resId);
@@ -65,14 +65,10 @@ public class InfoDialog extends Dialog{
         }
 
         /**
-         * Use Bitmap as dialog_info icon
+         * 使用bitmap方式引入icom
          */
         public Builder setIcon(Bitmap bitmap) {
             //mIcon.setImageBitmap(bitmap);
-            return this;
-        }
-        public Builder setStars(View.OnTouchListener listener){
-            mStarsTouchListener = listener;
             return this;
         }
 
@@ -86,11 +82,18 @@ public class InfoDialog extends Dialog{
             mMessage.setText(message);
             return this;
         }
+        /**
+         * 设置选择星级的触摸事件监听
+         */
+        public Builder setStars(View.OnTouchListener listener){
+            mStarsTouchListener = listener;
+            return this;
+        }
 
         /**
-         * Set text and listener for button
+         * 设置确定按钮的点击事件监听
          */
-        public Builder setButton(@NonNull String text, View.OnClickListener listener) {
+       public Builder setButton(@NonNull String text, View.OnClickListener listener) {
             mButton.setText(text);
             mButtonClickListener = listener;
             return this;
@@ -121,8 +124,8 @@ public class InfoDialog extends Dialog{
                 }
             });
             mDialog.setContentView(mLayout);
-            mDialog.setCancelable(true);                //User can click back to close dialog_info
-            mDialog.setCanceledOnTouchOutside(false);   //User can not click outside area to close dialog_info
+            mDialog.setCancelable(true);                //允许用户点击返回键关闭dialog
+            mDialog.setCanceledOnTouchOutside(false);   //禁止用户点击dialog之外的区域关闭dialog
             return mDialog;
         }
     }

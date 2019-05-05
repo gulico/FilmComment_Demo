@@ -3,7 +3,9 @@ package com.example.wxy.beanfilm.Model;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.Score;
+import com.example.wxy.beanfilm.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -29,6 +32,26 @@ import lecho.lib.hellocharts.view.PieChartView;
 
 public class ChartTools {
 
+    public static void setColumnChartViewDataTitle(LinearLayout linearLayout, LinearLayout SourcelinearLayout,Score s1,Score s2){
+        TextView textView1 = linearLayout.findViewById(R.id.Compare_f1_title);
+        TextView textView2 = linearLayout.findViewById(R.id.Compare_f2_title);
+        LinearLayout linearLayout1 = linearLayout.findViewById(R.id.Compare_f1_score);
+        LinearLayout linearLayout2 = linearLayout.findViewById(R.id.Compare_f2_score);
+        TextView textViewSource1 = SourcelinearLayout.findViewById(R.id.Compare_f1_Source);
+        TextView textViewSource2 = SourcelinearLayout.findViewById(R.id.Compare_f2_Source);
+        linearLayout1.setLayoutParams(new LinearLayout.LayoutParams((int)(s1.getScore()*linearLayout1.getWidth()*10), linearLayout1.getHeight()));
+        textView1.setText(s1.getTitle()+"："+s1.getScore());
+        textView2.setText(s2.getTitle()+"："+s2.getScore());
+        linearLayout2.setLayoutParams(new LinearLayout.LayoutParams((int)(s2.getScore()*linearLayout2.getWidth()*10), linearLayout2.getHeight()));
+        if(s1.getSource()== FilmSimple.Source.DOUBAN)
+            textViewSource1.setText("豆瓣  ");
+        else textViewSource1.setText("猫眼  ");
+
+        if(s2.getSource()== FilmSimple.Source.DOUBAN)
+            textViewSource2.setText("  豆瓣");
+        else textViewSource2.setText("  猫眼");
+    }
+
     public static void setColumnChartViewData(ColumnChartView chart, Score s1,Score s2) {
         String TAG= "ChartTools";
         //底部标题
@@ -40,20 +63,14 @@ public class ChartTools {
         //所有的柱子
         List<Column> columns = new ArrayList<>();
         //单个柱子
-
-
         title.add("五星");
         title.add("四星");
         title.add("三星");
         title.add("二星");
         title.add("一星");
-
-
         //颜色值
         color.add(Color.parseColor("#FFAD2E"));
         color.add(Color.parseColor("#41bd56"));
-
-
         //对每个集合的柱子进行遍历
         for (int i = 0; i < title.size(); i++) {
             //设置X轴的柱子所对应的属性名称(底部文字)
@@ -79,10 +96,7 @@ public class ChartTools {
             column.setValues(mPointValues);
             columns.add(column);
         }
-
         ColumnChartData columnData = new ColumnChartData(columns);
-
-
         //底部
         Axis axisBottom = new Axis(axisXValues);
         //是否显示X轴的网格线
@@ -131,6 +145,95 @@ public class ChartTools {
         chart.setColumnChartData(columnData);
     }
 
+    public static void setColumnChartViewDataTotal(ColumnChartView chart, Score s1,Score s2) {
+        String TAG= "ChartTools";
+        //底部标题
+        List<String> title = new ArrayList<>();
+        //颜色值
+        List<Integer> color = new ArrayList<>();
+        //X、Y轴值list
+        List<AxisValue> axisXValues = new ArrayList<>();
+        //所有的柱子
+        List<Column> columns = new ArrayList<>();
+        //单个柱子
+        title.add(s1.getTitle());
+        title.add(s2.getTitle());
+        //颜色值
+        color.add(Color.parseColor("#FFAD2E"));
+        color.add(Color.parseColor("#41bd56"));
+        //对每个集合的柱子进行遍历
+        for (int i = 0; i < title.size(); i++) {
+            //设置X轴的柱子所对应的属性名称(底部文字)
+            axisXValues.add(new AxisValue(i).setLabel(title.get(i)));
+
+            //将每个属性得列全部添加到List中
+            //添加了5个大柱子Column,单个大柱子里面mPointValues大小为3（自行调整)
+
+            Column column = new Column();
+            //是否显示每个柱子的标签
+            column.setHasLabels(true);
+            //设置每个柱子的Lable是否选中，为false，表示不用选中，一直显示在柱子上
+            column.setHasLabelsOnlyForSelected(false);
+            //设置Columns添加到Data中
+            List<SubcolumnValue> mPointValues = new ArrayList<>();
+            //显示几个小柱子 这里为3
+            //值的大小、颜色
+            SubcolumnValue subcolumnValue = new SubcolumnValue(((int) (i == 0 ? s1 : s2).getScore()));
+            //Log.d(TAG, "setChartViewData: " + subcolumnValue);
+            mPointValues.add(new SubcolumnValue(((int) (i == 0 ? s1 : s2).getScore()), color.get(i)));
+            column.setValues(mPointValues);
+            columns.add(column);
+        }
+        ColumnChartData columnData = new ColumnChartData(columns);
+        //底部
+        Axis axisBottom = new Axis(axisXValues);
+        //是否显示X轴的网格线
+        axisBottom.setHasLines(false);
+        //分割线颜色
+        axisBottom.setLineColor(Color.parseColor("#ff0000"));
+        //字体颜色
+        axisBottom.setTextColor(Color.parseColor("#666666"));
+        //字体大小
+        axisBottom.setTextSize(10);
+        //底部文字
+        axisBottom.setName("单位：%");
+        //每个柱子的便签是否倾斜着显示
+        axisBottom.setHasTiltedLabels(true);
+        //距离各标签之间的距离,包括离Y轴间距 (0-32之间)
+        axisBottom.setMaxLabelChars(10);
+        //设置是否自动生成轴对象,自动适应表格的范围(设置之后底部标题变成0-5)
+        //axisBottom.setAutoGenerated(true);
+        axisBottom.setHasSeparationLine(true);
+        //设置x轴在底部显示
+        columnData.setAxisXTop(axisBottom);
+
+        //左边  属性与上面一致
+        Axis axisLeft = new Axis();
+        axisLeft.setHasLines(false);
+        axisLeft.setName("左边标题");
+        axisLeft.setHasTiltedLabels(true);
+        axisLeft.setTextColor(Color.parseColor("#666666"));
+        //columnData.setAxisYLeft(axisLeft);
+
+        //设置数据标签的字体大小
+        //data.setValueLabelTextSize(12);
+        //设置数据标签的字体颜色
+        //data.setValueLabelsTextColor(Color.WHITE);
+        //设置数据背景是否跟随节点颜色
+        //data.setValueLabelBackgroundAuto(true);
+        //设置是否有数据背景  是否跟随columvalue的颜色变化
+        // data.setValueLabelBackgroundEnabled(true);
+        //设置坐标点旁边的文字背景(...)
+        //data.setValueLabelBackgroundColor(Color.YELLOW);
+        //axisBottom.setMaxLabelChars(5);
+        //设置组与组之间的间隔比率,取值范围0-1,1表示组与组之间不留任何间隔
+        columnData.setFillRatio(0.7f);
+        chart.setInteractive(false);
+        //最后将所有值显示在View中
+        chart.setColumnChartData(columnData);
+
+    }
+
     public  static void setPieChartData(PieChartView pieChart,Score s1,Score s2) {
 
         List<SliceValue> values = new ArrayList<>();
@@ -138,12 +241,12 @@ public class ChartTools {
         final List<Integer> colorData = new ArrayList<>();
         //标签信息
         final List<String> titleData = new ArrayList<>();
-        //10种颜色
+        //2种颜色
         colorData.add(Color.parseColor("#FFAD2E"));
         colorData.add(Color.parseColor("#41bd56"));
         //10中标签
-        titleData.add("华为 Mate 10");
-        titleData.add("荣耀6X");
+        //titleData.add("华为 Mate 10");
+        //titleData.add("荣耀6X");
 
         //10种模块，数据100随机数
         for (int i = 0; i < colorData.size(); i++) {
