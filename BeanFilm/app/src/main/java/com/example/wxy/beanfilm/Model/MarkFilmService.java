@@ -8,14 +8,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
 import com.example.wxy.beanfilm.Bean.RequestParameter;
-import com.example.wxy.beanfilm.Bean.woffFont;
 
 import org.litepal.crud.DataSupport;
-import org.python.antlr.ast.Str;
 
 import java.io.IOException;
 import java.util.ArrayList;

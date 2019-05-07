@@ -90,7 +90,6 @@ public class ChartTools {
             for (int j = 0; j < 2; j++) {
                 //值的大小、颜色
                 SubcolumnValue subcolumnValue= new SubcolumnValue(((int) (j == 0 ? s1 : s2).getStars()[i]));
-                Log.d(TAG, "setChartViewData: "+subcolumnValue);
                 mPointValues.add(new SubcolumnValue(((int) (j == 0 ? s1 : s2).getStars()[i]), color.get(j)));
             }
             column.setValues(mPointValues);
@@ -245,8 +244,8 @@ public class ChartTools {
         colorData.add(Color.parseColor("#FFAD2E"));
         colorData.add(Color.parseColor("#41bd56"));
         //10中标签
-        //titleData.add("华为 Mate 10");
-        //titleData.add("荣耀6X");
+        titleData.add(s1.getTitle());
+        titleData.add(s2.getTitle());
 
         //10种模块，数据100随机数
         for (int i = 0; i < colorData.size(); i++) {

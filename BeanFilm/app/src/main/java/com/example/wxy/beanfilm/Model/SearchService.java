@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.DocumentsContract;
@@ -59,14 +60,21 @@ public class SearchService extends IntentService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        //throw new UnsupportedOperationException("Not yet implemented");
         return mBinder;
+    }
+
+    public static void startActionSearch(Context context, String keyword,FilmSimple.Source source, ServiceConnection mConnection) {
+        Intent intent = new Intent(context, SearchService.class);
+        intent.putExtra(SEARCH_KEY , keyword);
+        intent.putExtra(WEB_TYPE,source);
+        context.startService(intent);
+        context.bindService(intent,mConnection,BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         mSearchkey = intent.getStringExtra(SEARCH_KEY);
+        Log.d(TAG, "onHandleIntent: key"+mSearchkey);
         TYPE = (FilmSimple.Source) intent.getSerializableExtra(WEB_TYPE);
         switch (TYPE){
             case DOUBAN:
@@ -77,7 +85,6 @@ public class SearchService extends IntentService {
                 break;
             default:
         }
-
     }
 
     private void SearchInDOUBAN(){
@@ -113,19 +120,18 @@ public class SearchService extends IntentService {
                         f.setInfo(mInfo);
                         f.setSource(DOUBAN);
                         filmSimples.add(f);
+                        Log.d(TAG, "run: DOUBAN"+mTitle);
                     }
-                    //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
-
                     if(filmSimples.size()==0)
                         mSearchState = SearchState.NOT_EXISTENT;//搜索结果不存在
                     else
                         mSearchState = SearchState.SEARCH_SUCCESS;//搜索结果大于等于1
                     Log.d(TAG, "run: mSearchState"+mSearchState);
-                    mCallback.onDataChange(mSearchState,filmSimples);
+                    mCallback.onDataChangeDouBan(mSearchState,filmSimples);
                 }catch (Exception e){
                     mSearchState = SearchState.NETWORK_ERROR;//网络错误
                     //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
-                    mCallback.onDataChange(mSearchState,filmSimples);
+                    mCallback.onDataChangeDouBan(mSearchState,filmSimples);
                 }
             }
         }.start();
@@ -168,6 +174,7 @@ public class SearchService extends IntentService {
                         f.setScore(mScore);
                         f.setInfo(mInfo);
                         f.setSource(MAOYAN);
+                        Log.d(TAG, "run: MAOYAN"+mTitle);
                         //filmSimpleLab.addFilmSimleLab(f);
                         filmSimples.add(f);
                     }
@@ -178,11 +185,11 @@ public class SearchService extends IntentService {
                     else
                         mSearchState = SearchState.SEARCH_SUCCESS;//搜索结果大于等于1
                     Log.d(TAG, "run: mSearchState"+mSearchState);
-                    mCallback.onDataChange(mSearchState,filmSimples);
+                    mCallback.onDateChangeMaoYan(mSearchState,filmSimples);
                 }catch (Exception e){
                     mSearchState = SearchState.NETWORK_ERROR;//网络错误
                     //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
-                    mCallback.onDataChange(mSearchState,filmSimples);
+                    mCallback.onDateChangeMaoYan(mSearchState,filmSimples);
                 }
             }
         }.start();
@@ -196,20 +203,13 @@ public class SearchService extends IntentService {
 
     }
 
-    /*服务启动必需*/
-    public static Intent newIntent(Context packageContext, String key,FilmSimple.Source Type) {
-        Intent intent = new Intent(packageContext, SearchService.class);
-        intent.putExtra(SEARCH_KEY, key);
-        intent.putExtra(WEB_TYPE,Type);
-        return intent;
-    }
-
     /*回调接口等*/
     public void setCallback(Callback callback) {
         this.mCallback = callback;
     }
 
     public static interface Callback {
-        void onDataChange(SearchState newSearchState,List<FilmSimple> filmSimples);
+        void onDataChangeDouBan(SearchState newSearchState,List<FilmSimple> filmSimples);
+        void onDateChangeMaoYan(SearchState newSearchState,List<FilmSimple> filmSimples);
     }
 }

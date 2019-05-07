@@ -25,8 +25,7 @@ import java.util.List;
  */
 
 public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.ViewHolder> {
-    public List<FilmSimple> mFilmSimples;
-    //public List<FilmSimple> mCheckedFilmSiple = new ArrayList<FilmSimple>();
+    public List<FilmSimple> mFilmSimples = new ArrayList<FilmSimple>();
     public List<CheckedState> mChecked = new ArrayList<CheckedState>();
     FilmSimple.Source TYPE;
     SearchActivity searchActivity;
@@ -38,6 +37,7 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Vi
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
+        private String TAG = "SearchFilmAdapter.ViewHolder";
         View FilmView;
         private FilmSimple mFilmSimple;
 
@@ -52,6 +52,7 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Vi
             FilmView = view;
             mParent = parent;
             //实例化视图对象
+            Log.d(TAG, "ViewHolder: 数据");
             mTitleTextView = (TextView)itemView.findViewById(R.id.searchresult_recycler_view_Title);
             mPicImageView = (ImageView)itemView.findViewById(R.id.searchresult_bk);
             mInfoTextView = (TextView)itemView.findViewById(R.id.searchresult_recycler_view_info);
@@ -60,6 +61,7 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Vi
 
         public void bind(FilmSimple filmSimple,CheckedState checkedState) {
             mFilmSimple = filmSimple;
+            Log.d(TAG, "bind: 绑定数据"+mFilmSimple.getTitle());
             //绑定数据
             mTitleTextView.setText(mFilmSimple.getTitle());
             mInfoTextView.setText(mFilmSimple.getInfo());
@@ -67,12 +69,18 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Vi
                     .load(mFilmSimple.getPic())
                     .centerCrop()
                     .into(mPicImageView);
-            if(checkedState == CheckedState.CHECKED)
+            if(checkedState == CheckedState.CHECKED) {
                 mCheckBox.setChecked(true);
-            else if(checkedState == CheckedState.UNCHECKED )
+                Log.d(TAG, "bind: 更新CHECKD"+mFilmSimple.getTitle());
+            }
+            else if(checkedState == CheckedState.UNCHECKED ) {
                 mCheckBox.setChecked(false);
-            else if(checkedState == CheckedState.BAN)
+                Log.d(TAG, "bind: 更新UNCHECKED"+mFilmSimple.getTitle());
+            }
+            else if(checkedState == CheckedState.BAN) {
                 mCheckBox.setEnabled(false);
+                Log.d(TAG, "bind: 更新BAN"+mFilmSimple.getTitle());
+            }
         }
     }
 
@@ -96,67 +104,46 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Vi
                 holder.mParent.getContext().startActivity(FilmDetailsActivity.newIntent(v.getContext(),holder.mFilmSimple.getUrl(),TYPE));
             }
         });
-            holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    int position = holder.getAdapterPosition();
-                    Toast.makeText(parent.getContext(),
-                            " clicked!"+position, Toast.LENGTH_SHORT)
-                            .show();
-                    if(b&&searchActivity.mCheckedFilmSiple.size()<2){
-                        holder.mFilmSimple.setSource(TYPE);
-                        searchActivity.mCheckedFilmSiple.add(holder.mFilmSimple);
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int position = holder.getAdapterPosition();
+                Toast.makeText(parent.getContext(),
+                        " clicked!"+position, Toast.LENGTH_SHORT)
+                        .show();
+                if(b&&searchActivity.mCheckedFilmSiple.size()<2){
+                    holder.mFilmSimple.setSource(TYPE);
+                    searchActivity.mCheckedFilmSiple.add(holder.mFilmSimple);
 
-                        mChecked.set(position,CheckedState.CHECKED);
-                        if(searchActivity.mCheckedFilmSiple.size()>1){//选择之后大于1
-                            for(int i=0;i<mChecked.size();i++){
-                                if(mChecked.get(i)== CheckedState.UNCHECKED ) {
-                                    mChecked.set(i, CheckedState.BAN);
-                                    notifyItemChanged(i);
-                                }
-                            }
-                        }
-                    }else if(!b){
-                        searchActivity.mCheckedFilmSiple.remove(holder.mFilmSimple);
-                        mChecked.set(position,CheckedState.UNCHECKED);
-                        if(searchActivity.mCheckedFilmSiple.size()==1){//取消之后==1
-                            for(int i=0;i<mChecked.size();i++){
-                                if(mChecked.get(i)== CheckedState.BAN ) {
-                                    mChecked.set(i, CheckedState.UNCHECKED);
-                                    Log.d(TAG, "onCheckedChanged: ban");
-                                    notifyItemChanged(i);
-                                }
-                            }
-                        }
+                    mChecked.set(position,CheckedState.CHECKED);
+                    if(searchActivity.mCheckedFilmSiple.size()>1){//选择之后大于1
+                        searchActivity.mSearchFilmFragmentStatePagerAdapter.getF1().setSearchListBan();
+                        searchActivity.mSearchFilmFragmentStatePagerAdapter.getF2().setSearchListBan();
+                    }
+                }else if(!b){
+                    searchActivity.mCheckedFilmSiple.remove(holder.mFilmSimple);
+                    mChecked.set(position,CheckedState.UNCHECKED);
+                    if(searchActivity.mCheckedFilmSiple.size()==1){//取消之后==1
+                        searchActivity.mSearchFilmFragmentStatePagerAdapter.getF1().setSearchListUnBan();
+                        searchActivity.mSearchFilmFragmentStatePagerAdapter.getF2().setSearchListUnBan();
                     }
                 }
-            });
+            }
+        });
 
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        //FilmSimple filmSimple = mFilmSimples.get(position);
-        //holder.bind(filmSimple,mChecked.get(position));
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         FilmSimple filmSimple = mFilmSimples.get(position);
-        if(payloads.isEmpty()) {
-            holder.bind(filmSimple, mChecked.get(position));
-
-        }
-        else if(payloads.size() > 0 && payloads.get(0) instanceof Integer){
-            Log.d(TAG, "onBindViewHolder: "+position);
-            if(mChecked.get(position) == CheckedState.CHECKED)
-                holder.mCheckBox.setChecked(true);
-            else if(mChecked.get(position) == CheckedState.UNCHECKED )
-                holder.mCheckBox.setChecked(false);
-            else if(mChecked.get(position) == CheckedState.BAN)
-                holder.mCheckBox.setEnabled(false);
-        }
+        holder.bind(filmSimple,mChecked.get(position));
+        if(mChecked.get(position) == CheckedState.CHECKED)
+            holder.mCheckBox.setChecked(true);
+        else if(mChecked.get(position) == CheckedState.UNCHECKED )
+            holder.mCheckBox.setChecked(false);
+        else if(mChecked.get(position) == CheckedState.BAN)
+            holder.mCheckBox.setEnabled(false);
     }
 
     @Override

@@ -11,7 +11,6 @@ import android.util.Log;
 import com.example.wxy.beanfilm.Bean.Actor;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
-import com.example.wxy.beanfilm.Bean.woffFont;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -221,7 +220,6 @@ public class FilmDetailService extends IntentService {
                 try{
                     Document doc = Jsoup.connect(URL)
                             .get();
-                    woffFont mfont = getwoffFont(doc);
 
                     String urlSTR = doc.select("p.movie-index-title").first().text();
                     Log.d(TAG, "getwoffFont: "+urlSTR);
@@ -324,17 +322,6 @@ public class FilmDetailService extends IntentService {
         }.start();
     }
 
-    woffFont getwoffFont(Document doc){
-
-
-        /*String url = new String();
-        if(strarray.length>1)
-            pic = strarray[1];*/
-        woffFont font = new woffFont();
-
-        return font;
-    } ;
-
     /*服务销毁：回收资源*/
     @Override
     public void onDestroy() {
@@ -349,6 +336,5 @@ public class FilmDetailService extends IntentService {
 
     public static interface Callback {
         void onDataChange(State state,FilmSimple filmSimple,List<Comment> comments);
-        void onDataChange(State state,FilmSimple filmSimple,List<Comment> comments,woffFont font);
     }
 }

@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.example.wxy.beanfilm.Bean.Comment;
 import com.example.wxy.beanfilm.Bean.FilmSimple;
 import com.example.wxy.beanfilm.Bean.MarkFilmSimple;
-import com.example.wxy.beanfilm.Bean.woffFont;
 import com.example.wxy.beanfilm.Model.Adapter.ActorsAdapter;
 import com.example.wxy.beanfilm.Model.Adapter.CommentsAdapter;
 import com.example.wxy.beanfilm.Model.FilmDetailService;
@@ -58,7 +56,6 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
     private FilmSimple.Source sTagFlag = FilmSimple.Source.NULL;
     private List<Comment> mComments = new ArrayList<Comment>();
     private FilmDetailService.State mState ;
-    private woffFont mWoffFont;
 
     private FilmDetailService mFilmDetailService;
 
@@ -72,16 +69,6 @@ public class FilmDetailsActivity extends AppCompatActivity implements View.OnCli
                 public void onDataChange(FilmDetailService.State state,FilmSimple filmSimple,List<Comment> comments) {
                     mFilmSimple = filmSimple;
                     mComments = comments;
-                    Message msg = new Message();
-                    msg.obj = state;
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onDataChange(FilmDetailService.State state, FilmSimple filmSimple, List<Comment> comments, woffFont font) {
-                    mFilmSimple = filmSimple;
-                    mComments = comments;
-                    mWoffFont = font;
                     Message msg = new Message();
                     msg.obj = state;
                     handler.sendMessage(msg);

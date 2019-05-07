@@ -27,7 +27,6 @@ public class VPFragment extends Fragment {
     private MineFilmAdapter mAdapter;
     private String mState = "";
     public List<MarkFilmSimple> mFilms = new ArrayList<>();
-    //MarkFilmSimpleLab mMarkFilmSimpleLab = MarkFilmSimpleLab.get(getActivity());
 
     public VPFragment(String state){
         mState = state;
@@ -38,7 +37,6 @@ public class VPFragment extends Fragment {
         mFilmSimplesRecyclerView = (RecyclerView) v.findViewById(R.id.MineFilm_recycler_view);
         mFilmSimplesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateFilmListUI();
-
         return v;
     }
 

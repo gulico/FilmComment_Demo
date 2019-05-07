@@ -1,11 +1,13 @@
 package com.example.wxy.beanfilm.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import com.example.wxy.beanfilm.R;
 import com.example.wxy.beanfilm.SearchActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,70 +28,69 @@ import java.util.List;
 
 public class SearchResultFragment extends Fragment {
 
+    private String TAG = "SearchResultFragment" ;
+
     private FilmSimple.Source TYPE = FilmSimple.Source.NULL;
-    //private TextView mTextView;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private RecyclerView mFilmSimplesRecyclerView;
     public SearchFilmAdapter mAdapter;
-    List<FilmSimple> mFilmSimples;
-    private AppCompatActivity mAppCompatActivity;
+    List<FilmSimple> mFilmSimples = new ArrayList<>();
 
-    public SearchResultFragment(FilmSimple.Source type, List<FilmSimple> filmSimples) {
+    public SearchResultFragment(FilmSimple.Source type) {
         this.TYPE = type;
-        mFilmSimples = filmSimples;
-    }
-
-    public SearchResultFragment() {
-    }
-
-    public static SearchResultFragment newInstance(FilmSimple.Source type, List<FilmSimple> filmSimples) {
-        Bundle args = new Bundle();
-        SearchResultFragment fragment = new SearchResultFragment();
-        args.putSerializable(ARG_PARAM1,type);
-        args.putSerializable(ARG_PARAM2,(Serializable)filmSimples);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            this.TYPE = (FilmSimple.Source)getArguments().getSerializable(ARG_PARAM1);
-            mFilmSimples = (List<FilmSimple>)getArguments().getSerializable(ARG_PARAM2);
-        }
-        mAppCompatActivity = (AppCompatActivity) getActivity();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search_result, container, false);
-        //mTextView = (TextView) v.findViewById(R.id.text);
-        //mTextView.setText(TYPE+"");
-        Bundle bundle =getArguments();
-        String message = null;
-        if(bundle!=null&&this.TYPE== FilmSimple.Source.NULL){
-            this.TYPE = (FilmSimple.Source)getArguments().getSerializable(ARG_PARAM1);
-            mFilmSimples = (List<FilmSimple>)getArguments().getSerializable(ARG_PARAM2);
-        }
-
         mFilmSimplesRecyclerView = (RecyclerView) v.findViewById(R.id.searchresult_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mFilmSimplesRecyclerView.setLayoutManager(layoutManager);
+        mFilmSimplesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return v;
     }
 
+    public void setSaerchList(List<FilmSimple> filmSimples) {
+        mFilmSimples.clear();
+        mFilmSimples = filmSimples;
+        Log.d(TAG, "setSaerchList: 调用更新");
+        updateUI();
+    }
 
+    public void setSearchListBan(){
+        for(int i=0;i<mAdapter.mChecked.size();i++){
+            SearchFilmAdapter.CheckedState c = mAdapter.mChecked.get(i);
+            if(c== SearchFilmAdapter.CheckedState.UNCHECKED) {
+                mAdapter.mChecked.set(i, SearchFilmAdapter.CheckedState.BAN);
+                Handler handler = new Handler();
+                final int finalI = i;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyItemChanged(finalI);
+                    }
+                });
+            }
+        }
+    }
+
+    public void setSearchListUnBan(){
+        for(int i=0;i<mAdapter.mChecked.size();i++){
+            SearchFilmAdapter.CheckedState c = mAdapter.mChecked.get(i);
+            if(c== SearchFilmAdapter.CheckedState.BAN) {
+                mAdapter.mChecked.set(i, SearchFilmAdapter.CheckedState.UNCHECKED);
+                Handler handler = new Handler();
+                final int finalI = i;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyItemChanged(finalI);
+                    }
+                });
+            }
+        }
+    }
     /*列表*/
-
     private void updateUI() {
-        //FilmSimpleLab filmSimpleLab = FilmSimpleLab.get(this);
-        //List<FilmSimple> filmSimples = filmSimpleLab.getFilmSimples();
         mAdapter = new SearchFilmAdapter(mFilmSimples,TYPE,(SearchActivity) getActivity());
         mAdapter.setHasStableIds(true);
         mFilmSimplesRecyclerView.setAdapter(mAdapter);

@@ -26,11 +26,7 @@ import okhttp3.Response;
  */
 public class RegisterService extends IntentService {
     private String TAG = "RegisterService";
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_REGISTER = "com.example.wxy.beanfilm.Model.action.REGISTER";
-
-    // TODO: Rename parameters
     private static final String EXTRA_REGISTERUSER = "com.example.wxy.beanfilm.Model.extra.REGISTERUSER";
 
     public enum State{

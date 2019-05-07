@@ -1,27 +1,27 @@
 package com.example.wxy.beanfilm;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.wxy.beanfilm.Bean.FilmSimple;
-import com.example.wxy.beanfilm.Fragment.SearchResultFragment;
-import com.example.wxy.beanfilm.Model.CompareService;
+import com.example.wxy.beanfilm.Model.Adapter.SearchFilmFragmentStatePagerAdapter;
 import com.example.wxy.beanfilm.Model.SearchService;
 
 import java.util.ArrayList;
@@ -37,103 +37,37 @@ public class SearchActivity extends AppCompatActivity{
     private static Source sTagFlag = DOUBAN;//换页标志
     private String Search_key = "";
 
-    private LinearLayout mLinearLayoutFirstTag;
-    private LinearLayout mLinearLayoutSecondTag;
     private LinearLayout mCompareTag;
-    private ImageView mImageViewFirst;
-    private ImageView mImageViewSecond;
+    private ViewPager mViewPager1;
+    private TabLayout mTabLayout;
+    private String[] tabTitle = {"豆瓣","猫眼"};
+    private boolean inittab2 = false;
+    private boolean inittab1 = false;
 
     private AppCompatActivity mAppCompatActivity;
 
     List<FilmSimple> mFilmSimples;
 
-    private FragmentManager fm;
-    private Fragment currentFragment;
-
-    private SearchService mSearchService;
     public List<FilmSimple> mCheckedFilmSiple = new ArrayList<FilmSimple>();
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            //服务连接
-            mSearchService = ((SearchService.SearchBinder)service).getService();
-            mSearchService.setCallback(new SearchService.Callback() {
-                @Override
-                public void onDataChange(SearchService.SearchState newSearchState,List<FilmSimple> filmSimples) {
-                    //此处依然不能更新UI
-                    mFilmSimples = filmSimples;
-                    Message msg = new Message();
-                    msg.obj = newSearchState;
-                    handler.sendMessage(msg);
-                }
-            });
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            //服务断开
-        }
-    };
+    public List<FilmSimple> mDouBanFilmSimples = new ArrayList<FilmSimple>();
+    public List<FilmSimple> mMaoYanFilmSimples = new ArrayList<FilmSimple>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         mAppCompatActivity = this;
-
         Intent intent  = getIntent();
         Search_key = intent.getStringExtra("search_key");
-        startSearchSercive(Search_key, DOUBAN);
-
         mCompareTag = (LinearLayout) this.findViewById(R.id.source_nav_compare_button);
-        mLinearLayoutFirstTag = (LinearLayout)this.findViewById(R.id.source_nav_first_tag);
-        mLinearLayoutSecondTag = (LinearLayout)this.findViewById(R.id.source_nav_second_tag);
-        mImageViewFirst = (ImageView)this.findViewById(R.id.source_nav_first_ico);
-        mImageViewSecond = (ImageView)this.findViewById(R.id.source_nav_second_ico);
 
-        mImageViewFirst.setColorFilter(Color.parseColor("#41bd56"));
-        mImageViewSecond.setColorFilter(Color.parseColor("#969696"));
-
-        /*碎片显示管理*/
-        fm = getSupportFragmentManager();
-        currentFragment = fm.findFragmentById(R.id.source_fragment_container);
-
-        //单击豆瓣Tag
-        mLinearLayoutFirstTag.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if(sTagFlag != DOUBAN){//若当前显示不是豆瓣
-                    sTagFlag = DOUBAN;
-
-                    mImageViewFirst.setColorFilter(Color.parseColor("#41bd56"));
-                    mImageViewSecond.setColorFilter(Color.parseColor("#969696"));
-
-                    replaceFragment("douban");
-
-                }
-            }
-        });
-
-        //单击猫眼Tag
-        mLinearLayoutSecondTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(sTagFlag != MAOYAN){//若当前显示不是豆瓣
-                    sTagFlag = MAOYAN;
-
-                    mImageViewSecond.setColorFilter(Color.parseColor("#41bd56"));
-                    mImageViewFirst.setColorFilter(Color.parseColor("#969696"));
-
-                    replaceFragment("maoyan");
-
-                }
-            }
-        });
+        initViews(this.getWindow().getDecorView());
+        SearchService.startActionSearch(this,Search_key,DOUBAN,mConnection);
+        SearchService.startActionSearch(this,Search_key,MAOYAN,mConnection);
+        initData();
 
         mCompareTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //List<FilmSimple> checkedfilmSimples = ((SearchResultFragment)currentFragment).mAdapter.mCheckedFilmSiple;
                 if(mCheckedFilmSiple.size()==2){
                     FilmSimple f1 = mCheckedFilmSiple.get(0);
                     FilmSimple f2 = mCheckedFilmSiple.get(1);
@@ -144,43 +78,77 @@ public class SearchActivity extends AppCompatActivity{
 
             }
         });
+
     }
 
-
-    /*替换碎片 */
-    private void replaceFragment(String tag) {
-        if (currentFragment != null) {
-            getSupportFragmentManager().beginTransaction().hide(currentFragment).commit();
+    private void initViews(View rootView) {
+        mViewPager1 = (ViewPager) rootView.findViewById(R.id.source_fragment_container);
+        mTabLayout = (TabLayout) rootView.findViewById(R.id.source_nav_compare_TabLayout);
+    }
+    public SearchFilmFragmentStatePagerAdapter mSearchFilmFragmentStatePagerAdapter ;
+    private void initData() {
+        for (int i=0; i<tabTitle.length; i++) {
+            mTabLayout.addTab(mTabLayout.newTab().setText(tabTitle[i]));
         }
-        currentFragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if (currentFragment == null) {
-            switch (sTagFlag) {
-                case DOUBAN:
-                    Intent intent1  = getIntent();
-                    Search_key = intent1.getStringExtra("search_key");
-                    startSearchSercive(Search_key, DOUBAN);
-                    //currentFragment = new SearchResultFragment(sTagFlag,mFilmSimples);
-                    break;
-                case MAOYAN:
-                    Intent intent2  = getIntent();
-                    Search_key = intent2.getStringExtra("search_key");
-                    startSearchSercive(Search_key, Source.MAOYAN);
-                    //currentFragment = new SearchResultFragment(sTagFlag,mFilmSimples);
-                    break;
+        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        mTabLayout.setSelectedTabIndicatorColor(Color.parseColor("#7CCD7C"));
+        mTabLayout.setTabTextColors(Color.GRAY, Color.parseColor("#41bd56"));
+
+        mSearchFilmFragmentStatePagerAdapter = new SearchFilmFragmentStatePagerAdapter(getSupportFragmentManager(),tabTitle);
+        mViewPager1.setAdapter(mSearchFilmFragmentStatePagerAdapter);
+        mViewPager1.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager1.setCurrentItem(tab.getPosition());
+                int position = mViewPager1.getCurrentItem();
             }
-            //getSupportFragmentManager().beginTransaction().add(R.id.source_fragment_container, currentFragment, tag).commit();
-        }else {
-            getSupportFragmentManager().beginTransaction().show(currentFragment).commit();
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+    private SearchService mSearchService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, final IBinder service) {
+            //服务连接
+            mSearchService = ((SearchService.SearchBinder)service).getService();
+            mSearchService.setCallback(new SearchService.Callback() {
+                @Override
+                public void onDataChangeDouBan(SearchService.SearchState newSearchState, List<FilmSimple> filmSimples) {
+                    Message msg = new Message();
+                    msg.obj = newSearchState;
+                    msg.arg1 = 1;
+                    mDouBanFilmSimples = filmSimples;
+                    handler.sendMessage(msg);
+                }
+
+                @Override
+                public void onDateChangeMaoYan(SearchService.SearchState newSearchState, List<FilmSimple> filmSimples) {
+                    Message msg = new Message();
+                    msg.obj = newSearchState;
+                    msg.arg1 = 2;
+                    mMaoYanFilmSimples = filmSimples;
+                    Log.d(TAG, "onDataChange: "+mMaoYanFilmSimples.size());
+                    handler.sendMessage(msg);
+                }
+            });
         }
-    }
 
-
-    /*启动查询服务*/
-    public void startSearchSercive(String query, FilmSimple.Source type){
-        Intent toSearchService = SearchService.newIntent(this,query,type);
-        startService(toSearchService);
-        bindService(toSearchService,mConnection,BIND_AUTO_CREATE);
-    }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            //服务断开
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -189,29 +157,19 @@ public class SearchActivity extends AppCompatActivity{
             super.handleMessage(msg);
             //此处更新UI
             String str = new String();
-            String tag = "";
-            switch (sTagFlag ){
-                case DOUBAN:
-                    tag = "douban";
-                    break;
-                case MAOYAN:
-                    tag = "maoyan";
-                    break;
-                default:
-            }
             switch (msg.obj.toString()){
                 case"SEARCH_SUCCESS":
                     str = "搜索成功";
-                    currentFragment = new SearchResultFragment().newInstance(sTagFlag, mFilmSimples);
-                    if(isFirst) {
-                        isFirst = false;
-                        fm.beginTransaction()
-                                .add(R.id.source_fragment_container, currentFragment)
-                                .commit();
-                    }else {
-                        getSupportFragmentManager().beginTransaction().add(R.id.source_fragment_container, currentFragment, tag).commit();
+                    if(msg.arg1==1&&mSearchFilmFragmentStatePagerAdapter.getF1()!=null) {
+                        Log.d(TAG, "handleMessage: 填充豆瓣");
+                        mSearchFilmFragmentStatePagerAdapter.getF1().setSaerchList(mDouBanFilmSimples);
+                        inittab1=true;
                     }
-                    //updateUI();
+                    else if(msg.arg1==2&&mSearchFilmFragmentStatePagerAdapter.getF2()!=null) {
+                        Log.d(TAG, "handleMessage: 填充猫眼");
+                        mSearchFilmFragmentStatePagerAdapter.getF2().setSaerchList(mMaoYanFilmSimples);
+                        inittab2 = true;
+                    }
                     break;
                 case "NOT_EXISTENT"://无记录
                     str = "无记录";
@@ -231,5 +189,4 @@ public class SearchActivity extends AppCompatActivity{
         super.onDestroy();
         unbindService(mConnection);
     }
-
 }
